@@ -38,4 +38,6 @@ bun run e2e                        # Playwright against its own Vite server (por
 
 ## Colours
 
+`src/game/render.ts` draws a frame as a function of `(ctx, state, view)`, and `src/game/loop.ts` is the fixed-timestep accumulator (frame gaps capped, no advance while the tab is hidden). The browser wiring lives outside the pure module: `src/hooks/useGameLoop.ts` runs `requestAnimationFrame`, `src/hooks/useGameState.ts` reads the store (`src/game/store.ts`) through `useSyncExternalStore`, and `src/components/GameCanvas.tsx` owns the canvas.
+
 CSS colours live in `src/styles/tokens.css` and canvas colours in `src/game/palette.ts`. No other file under `src/` holds a raw colour literal.
