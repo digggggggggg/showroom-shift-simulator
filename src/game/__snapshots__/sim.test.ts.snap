@@ -1,0 +1,20 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`seeded replay > produces identical stats on every run 1`] = `
+{
+  "round1": {
+    "captured": 1710,
+    "hubOrders": 0,
+    "lost": 1380,
+    "unmannedSeconds": 29,
+    "walkouts": 5,
+  },
+  "round2": {
+    "captured": 4365,
+    "hubOrders": 7,
+    "lost": 0,
+    "unmannedSeconds": 9,
+    "walkouts": 0,
+  },
+}
+`;

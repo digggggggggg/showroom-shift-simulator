@@ -32,6 +32,10 @@ bun run e2e                        # Playwright against its own Vite server (por
 
 `bun run screenshots:original` serves the original and writes phone and desktop captures to `docs/screenshots/original/`. UI work is accepted when the port matches them.
 
+## Game logic
+
+`src/game/` is the pure simulation (`docs/adr/0001-pure-sim-fixed-timestep.md`): `startShift`, `step`, `serveAdvice`, `processMix` and `continueFromModal` take a state and return the next state plus events for audio and dialogue; `deriveActionButtons` gives the till buttons' labels. Tuning numbers are in `src/game/config.ts`; randomness comes from the seeded RNG in `src/game/rng.ts`, so a shift replays exactly in tests.
+
 ## Colours
 
 CSS colours live in `src/styles/tokens.css` and canvas colours in `src/game/palette.ts`. No other file under `src/` holds a raw colour literal.
