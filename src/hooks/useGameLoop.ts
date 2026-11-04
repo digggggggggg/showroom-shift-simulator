@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { createLoopDriver, createRng, step, type GameStore, type Rng } from '../game';
+import { createLoopDriver, createRng, step, type GameStore, type Rng, type SimEvent } from '../game';
 
 export interface GameLoopOptions {
   /** Called once per animation frame after the sim has advanced. */
@@ -24,8 +24,14 @@ export function useGameLoop(store: GameStore, options: GameLoopOptions): void {
     const tick = (now: number): void => {
       const steps = driver.frame(now, document.hidden);
       let state = store.getState();
-      for (let i = 0; i < steps; i++) state = step(state, rng).state;
+      const events: SimEvent[] = [];
+      for (let i = 0; i < steps; i++) {
+        const result = step(state, rng);
+        state = result.state;
+        events.push(...result.events);
+      }
       store.setState(state);
+      store.emit(events);
       optionsRef.current.onFrame();
       handle = requestAnimationFrame(tick);
     };

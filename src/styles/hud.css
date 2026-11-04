@@ -291,3 +291,8 @@
   transform: translateY(2px);
   box-shadow: 0 1px 0 var(--color-black);
 }
+
+.pwr-led.pwr-led-muted {
+  background: var(--color-led-off);
+  box-shadow: 0 0 6px var(--color-led-off);
+}
