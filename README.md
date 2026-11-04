@@ -30,6 +30,15 @@ bunx playwright install chromium   # once
 bun run e2e                        # Playwright against its own Vite server (port 4173, override with E2E_PORT)
 ```
 
+The suite plays both rounds by keyboard on a faked clock (`page.clock`), reaches the comparison report, replays, and runs axe (`@axe-core/playwright`) on the briefing, mid-shift, bottleneck report and comparison report at phone and desktop widths, failing on serious or critical violations. It needs a browser, so it is not part of `bun run gates`; run it in CI where one is available.
+
+For the app-wide accessibility sweep and the PR screenshots, use forger's commands with the dev server's port free:
+
+```sh
+bun /home/diego/work/forger/plugins/forger/bin/work.ts screenshot   # regenerates docs/screenshots/index-*.png
+bun /home/diego/work/forger/plugins/forger/bin/work.ts check a11y   # axe on every route and viewport
+```
+
 ## Reference screenshots
 
 `bun run screenshots:original` serves the original and writes phone and desktop captures to `docs/screenshots/original/`. UI work is accepted when the port matches them.
