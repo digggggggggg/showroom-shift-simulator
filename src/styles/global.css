@@ -78,3 +78,8 @@ body {
   height: 100%;
   image-rendering: pixelated;
 }
+
+button:focus-visible {
+  outline: 3px solid var(--color-white);
+  outline-offset: 2px;
+}
