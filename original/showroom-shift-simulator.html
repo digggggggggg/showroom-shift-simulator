@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>London Paint Showroom: Shift Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 25%, #2a3439 0%, #0d1215 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Press Start 2P', monospace;
+      color: #e6edf3;
+      padding: 8px;
+    }
+
+    /* Handheld Retro Game Boy Casing */
+    .gameboy-frame {
+      background: linear-gradient(155deg, #7c3fba 0%, #582490 60%, #3e1669 100%);
+      border-radius: 24px 24px 44px 20px;
+      padding: 12px 14px 16px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.8), inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -6px 8px rgba(0,0,0,0.5);
+      border: 3px solid #2a0b4d;
+      max-width: 520px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #e6cdff;
+      font-size: 8px;
+      letter-spacing: 0.8px;
+      padding: 0 4px;
+    }
+
+    .status-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pwr-led {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #39ff14;
+      box-shadow: 0 0 6px #39ff14;
+      display: inline-block;
+      margin-right: 4px;
+      animation: pulseLed 1.8s infinite ease-in-out;
+    }
+
+    @keyframes pulseLed {
+      0%, 100% { opacity: 0.95; }
+      50% { opacity: 0.4; }
+    }
+
+    .mute-toggle-btn {
+      background: #2a0b4d;
+      border: 1px solid #c299fc;
+      color: #f1e4ff;
+      font-family: inherit;
+      font-size: 6.5px;
+      padding: 3px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Screen Bezel */
+    .screen-bezel {
+      background: #181d24;
+      border-radius: 10px 10px 24px 10px;
+      padding: 10px 8px 12px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 2px solid #0f1216;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
+      gap: 6px;
+    }
+
+    .sub-status-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 7px;
+      color: #ffd166;
+      padding: 0 4px;
+    }
+
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 320 / 288;
+      background: #e4ecdc;
+      border: 3px solid #000;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      image-rendering: pixelated;
+    }
+
+    /* Authentic Pokémon Dialogue Box */
+    .dialogue-box {
+      width: 100%;
+      background: #fbfbf4;
+      border: 4px double #1b2620;
+      border-radius: 4px;
+      padding: 8px 10px;
+      min-height: 48px;
+      color: #17241d;
+      font-size: 7.2px;
+      line-height: 1.55;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    .cursor-arrow {
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 6px solid #17241d;
+      align-self: flex-end;
+      margin-left: 6px;
+      animation: bounceArrow 0.6s infinite alternate;
+    }
+
+    @keyframes bounceArrow {
+      from { transform: translateY(0); }
+      to { transform: translateY(3px); }
+    }
+
+    /* Controls Panel */
+    .controls-panel {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .act-btn {
+      appearance: none;
+      width: 100%;
+      padding: 10px 6px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7.5px;
+      line-height: 1.35;
+      border-radius: 6px;
+      border: 2px solid #000;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 4px 0 #000;
+      color: #fff;
+      transition: transform 0.05s ease, filter 0.1s ease;
+    }
+
+    .act-btn:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #000;
+    }
+
+    .act-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      filter: grayscale(0.85);
+      box-shadow: none !important;
+    }
+
+    .btn-advice {
+      background: #06d6a0;
+      color: #032b21;
+    }
+
+    .btn-mix {
+      background: #e76f51;
+      color: #fff;
+    }
+
+    .btn-hub {
+      background: #4cc9f0;
+      color: #032238;
+      box-shadow: 0 4px 0 #0077b6;
+    }
+
+    /* KPI Summary Row */
+    .kpi-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      font-size: 6px;
+      text-align: center;
+    }
+
+    .kpi-card {
+      background: #151a21;
+      border: 1px solid #2d3540;
+      border-radius: 4px;
+      padding: 4px 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .kpi-val {
+      font-size: 7.5px;
+      color: #06d6a0;
+    }
+    .kpi-val.red { color: #ef476f; }
+    .kpi-val.gold { color: #ffd166; }
+    .kpi-val.blue { color: #4cc9f0; }
+
+    /* Interactive Overlay Modal */
+    .overlay-modal {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 14, 18, 0.88);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      z-index: 50;
+      text-align: center;
+    }
+
+    .modal-box {
+      background: #fdfbf4;
+      border: 4px double #17271e;
+      border-radius: 6px;
+      padding: 12px;
+      max-width: 380px;
+      width: 95%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      color: #17241d;
+      font-size: 7px;
+      line-height: 1.6;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+      text-align: left;
+    }
+
+    .modal-box h2 {
+      font-size: 9px;
+      color: #0b6742;
+      text-align: center;
+    }
+
+    .modal-btn {
+      appearance: none;
+      background: #06d6a0;
+      color: #032b21;
+      border: 2px solid #000;
+      padding: 9px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 8px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      margin-top: 4px;
+      box-shadow: 0 3px 0 #000;
+    }
+
+    .modal-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #000;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="gameboy-frame">
+    <div class="brand-bar">
+      <span>LONDON PAINT SHOWROOM</span>
+      <div class="status-group">
+        <div><span class="pwr-led" id="ledDot"></span>PWR</div>
+        <button id="btnMute" class="mute-toggle-btn">🔊 SFX: ON</button>
+      </div>
+    </div>
+
+    <div class="screen-bezel">
+      <div class="sub-status-bar">
+        <span id="txtRoundTag">ROUND 1: IN-STORE MIXING</span>
+        <span id="txtShiftTimer">SHIFT: 30s</span>
+      </div>
+
+      <div class="canvas-container" id="screenTapZone">
+        <canvas id="gameCanvas" width="320" height="288"></canvas>
+
+        <!-- Briefing & Results Modal -->
+        <div id="modalOverlay" class="overlay-modal" style="display: flex;">
+          <div class="modal-box">
+            <h2 id="modalHeader">ROUND 1: IN-STORE BOTTLENECK</h2>
+            <div id="modalBodyText">
+              Experience the 30-second retail bottleneck.<br><br>
+              • All paint mixing is handled <strong>on-site at 1s per tin</strong>.<br>
+              • Leaving the counter unmanned leaves waiting clients stranded.<br>
+              • Impatient clients walk out with lost revenue!
+            </div>
+            <button id="btnModalAction" class="modal-btn">▶ START ROUND 1 (30s)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dialogue Frame -->
+      <div class="dialogue-box">
+        <div id="txtDialogue">CLERK: Ready for shift. Customer approaching till.</div>
+        <div class="cursor-arrow"></div>
+      </div>
+    </div>
+
+    <!-- On-Screen Action Controls -->
+    <div class="controls-panel">
+      <div class="action-grid">
+        <button id="btnServeAdvice" class="act-btn btn-advice">
+          <span id="txtAdviceTitle">CONSULT / SAMPLE</span>
+          <span id="txtAdviceSub" style="font-size:6px; opacity:0.85; margin-top:2px;">[KEY: 1] • Till Service</span>
+        </button>
+
+        <button id="btnProcessMix" class="act-btn btn-mix">
+          <span id="txtMixTitle">MIX ORDER</span>
+          <span id="txtMixSub" style="font-size:6px; opacity:0.85; margin-top:2px;">[KEY: 2 / SPACE]</span>
+        </button>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <span>CAPTURED</span>
+          <strong class="kpi-val" id="kpiCaptured">£0</strong>
+        </div>
+        <div class="kpi-card">
+          <span>WALKOUTS</span>
+          <strong class="kpi-val red" id="kpiLost">£0</strong>
+        </div>
+        <div class="kpi-card">
+          <span>UNMANNED</span>
+          <strong class="kpi-val gold" id="kpiUnmanned">0s</strong>
+        </div>
+        <div class="kpi-card">
+          <span>HUB ORDERS</span>
+          <strong class="kpi-val blue" id="kpiHub">0</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       1. Soft Boardroom-Safe Web Audio Synthesizer
+       ========================================================================== */
+    class SoftSoundFX {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+        this.humOsc = null;
+        this.humGain = null;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AC();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playRegisterChime() {
+        if (this.muted) return;
+        this.init();
+        const t = this.ctx.currentTime;
+        [587.33, 880, 1174.66].forEach((freq, i) => {
+          try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, t + i * 0.05);
+            gain.gain.setValueAtTime(0.04, t + i * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.05 + 0.14);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(t + i * 0.05);
+            osc.stop(t + i * 0.05 + 0.15);
+          } catch(e){}
+        });
+      }
+
+      playHubWhoosh() {
+        if (this.muted) return;
+        this.init();
+        const t = this.ctx.currentTime;
+        [440, 554.37, 659.25, 880].forEach((freq, i) => {
+          try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, t + i * 0.04);
+            gain.gain.setValueAtTime(0.035, t + i * 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.04 + 0.12);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(t + i * 0.04);
+            osc.stop(t + i * 0.04 + 0.13);
+          } catch(e){}
+        });
+      }
+
+      // Melodic descending 5-note retro losing coins chime
+      playLosingCoins() {
+        if (this.muted) return;
+        this.init();
+        const t = this.ctx.currentTime;
+        const freqs = [659.25, 554.37, 440.00, 329.63, 220.00]; // E5 -> C#5 -> A4 -> E4 -> A3
+        freqs.forEach((freq, i) => {
+          try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'square';
+            const noteStart = t + i * 0.06;
+            osc.frequency.setValueAtTime(freq, noteStart);
+            gain.gain.setValueAtTime(0.03, noteStart);
+            gain.gain.exponentialRampToValueAtTime(0.0001, noteStart + 0.08);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(noteStart);
+            osc.stop(noteStart + 0.09);
+          } catch(e){}
+        });
+      }
+
+      startShakerHum() {
+        if (this.muted || this.humOsc) return;
+        this.init();
+        try {
+          this.humOsc = this.ctx.createOscillator();
+          this.humGain = this.ctx.createGain();
+          this.humOsc.type = 'triangle';
+          this.humOsc.frequency.setValueAtTime(45, this.ctx.currentTime); // Gentle 45Hz sub-bass hum
+          this.humGain.gain.setValueAtTime(0.015, this.ctx.currentTime);  // Quiet volume
+          this.humOsc.connect(this.humGain);
+          this.humGain.connect(this.ctx.destination);
+          this.humOsc.start();
+        } catch(e){}
+      }
+
+      stopShakerHum() {
+        if (this.humOsc) {
+          try {
+            this.humGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.04);
+            this.humOsc.stop(this.ctx.currentTime + 0.05);
+          } catch(e){}
+          this.humOsc = null;
+          this.humGain = null;
+        }
+      }
+    }
+
+    const sfx = new SoftSoundFX();
+
+    // Mute Button Toggle
+    const btnMute = document.getElementById('btnMute');
+    btnMute.addEventListener('click', () => {
+      sfx.muted = !sfx.muted;
+      btnMute.textContent = sfx.muted ? '🔇 SFX: OFF' : '🔊 SFX: ON';
+      document.getElementById('ledDot').style.background = sfx.muted ? '#ef476f' : '#39ff14';
+      document.getElementById('ledDot').style.boxShadow = sfx.muted ? '0 0 6px #ef476f' : '0 0 6px #39ff14';
+    });
+
+    /* ==========================================================================
+       2. Simulation State & Data
+       ========================================================================== */
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+
+    let currentRound = 1;
+    let shiftActive = false;
+    let shiftSecondsLeft = 30;
+    let shiftFramesLeft = 30 * 60;
+    let spawnTimer = 0;
+
+    let round1Stats = null;
+    let stats = {
+      captured: 0,
+      lost: 0,
+      walkouts: 0,
+      unmannedSeconds: 0,
+      hubOrders: 0
+    };
+
+    // Clerk Sprite State behind counter
+    const CLERK = {
+      x: 200, y: 72,
+      homeX: 200, homeY: 72,
+      shakerX: 74, shakerY: 42,
+      state: 'at_till', // 'at_till', 'walking_to_shaker', 'mixing', 'walking_to_till'
+      tinsRemaining: 0,
+      busyTimer: 0,
+      busyMax: 0,
+      speed: 2.4
+    };
+
+    // Queue Slots in front of Till Counter
+    const QUEUE_SLOTS = [
+      { x: 196, y: 148 }, // At Till
+      { x: 160, y: 148 },
+      { x: 124, y: 148 },
+      { x: 88,  y: 148 },
+      { x: 52,  y: 148 },
+      { x: 16,  y: 148 }
+    ];
+
+    const PALETTES = [
+      { hat: '#2d6a4f', hair: '#6f4e37', shirt: '#2a9d8f', pants: '#1d3557', hatType: 'cap' },
+      { hat: '#e63946', hair: '#7209b7', shirt: '#9b5de5', pants: '#212529', hatType: 'cap' },
+      { hat: '#e9c46a', hair: '#f4a261', shirt: '#e76f51', pants: '#264653', hatType: 'straw' },
+      { hat: null,      hair: '#0077b6', shirt: '#00bbf9', pants: '#1a1a24', hatType: null },
+      { hat: '#f72585', hair: '#4361ee', shirt: '#f72585', pants: '#3a0ca3', hatType: 'straw' }
+    ];
+
+    class Customer {
+      constructor(forceOrder = null) {
+        this.x = -24;
+        this.y = 148;
+        this.targetX = -24;
+        this.targetY = 148;
+        this.speed = 2.2;
+        this.palette = PALETTES[Math.floor(Math.random() * PALETTES.length)];
+        this.isLeaving = false;
+
+        // Guaranteed Order Classification
+        if (forceOrder === 'TRADE_10') {
+          this.category = 'TRADE_LARGE';
+          this.tins = 10;
+          this.val = 700;
+          this.name = '10x Tins Trade Order';
+          this.bubble = '10 TINS';
+        } else {
+          const roll = Math.random();
+          if (roll < 0.35) {
+            // Large Mix (6 to 10 tins) -> Hub eligible in Round 2!
+            this.category = 'TRADE_LARGE';
+            this.tins = Math.floor(Math.random() * 5) + 6; // 6, 7, 8, 9, 10
+            this.val = this.tins * 70;
+            this.name = `${this.tins}x Tins Trade Order`;
+            this.bubble = `${this.tins} TINS`;
+          } else if (roll < 0.60) {
+            // Small Mix (2 to 5 tins) -> On-site mixed at 1s/tin in both rounds
+            this.category = 'MIX_SMALL';
+            this.tins = Math.floor(Math.random() * 4) + 2; // 2, 3, 4, 5
+            this.val = this.tins * 60;
+            this.name = `${this.tins}x Tins Emulsion`;
+            this.bubble = `${this.tins} TINS`;
+          } else if (roll < 0.82) {
+            // Colour Advice Consultation
+            this.category = 'ADVICE';
+            this.tins = 0;
+            this.val = 45;
+            this.name = 'Colour Consultation';
+            this.bubble = 'ADVICE';
+          } else {
+            // Sample Pot
+            this.category = 'ADVICE';
+            this.tins = 1;
+            this.val = 55;
+            this.name = 'Sample Pot (1 Tin)';
+            this.bubble = '1 POT';
+          }
+        }
+
+        this.maxPatience = 660; // ~11s patience
+        this.patience = this.maxPatience;
+      }
+
+      update(slotIdx) {
+        if (!this.isLeaving) {
+          const slot = QUEUE_SLOTS[Math.min(slotIdx, QUEUE_SLOTS.length - 1)];
+          this.targetX = slot.x;
+          this.targetY = slot.y;
+        }
+
+        const dx = this.targetX - this.x;
+        const dy = this.targetY - this.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist > this.speed) {
+          this.x += (dx / dist) * this.speed;
+          this.y += (dy / dist) * this.speed;
+        } else {
+          this.x = this.targetX;
+          this.y = this.targetY;
+        }
+
+        // Patience drains 80% faster if till is unmanned!
+        if (!this.isLeaving) {
+          const drain = (CLERK.state !== 'at_till') ? 1.8 : 1.0;
+          this.patience -= drain;
+
+          if (this.patience <= 0) {
+            this.leaveAngry();
+          }
+        }
+      }
+
+      leaveAngry() {
+        this.isLeaving = true;
+        this.targetX = -32;
+        this.targetY = 220;
+        stats.lost += this.val;
+        stats.walkouts++;
+        sfx.playLosingCoins();
+        floaters.push({ x: this.x, y: this.y - 20, text: `-£${this.val}`, color: '#ef476f', alpha: 1.0 });
+        setDialogue(`WALKOUT: Customer left! "Nobody is serving at the till!" (-£${this.val})`);
+      }
+    }
+
+    const queue = [];
+    const floaters = [];
+
+    /* ==========================================================================
+       3. Interactive Controls & Guaranteed Till Option Handling
+       ========================================================================== */
+    const txtDialogue = document.getElementById('txtDialogue');
+    const btnServeAdvice = document.getElementById('btnServeAdvice');
+    const btnProcessMix = document.getElementById('btnProcessMix');
+    const txtAdviceTitle = document.getElementById('txtAdviceTitle');
+    const txtAdviceSub = document.getElementById('txtAdviceSub');
+    const txtMixTitle = document.getElementById('txtMixTitle');
+    const txtMixSub = document.getElementById('txtMixSub');
+
+    function setDialogue(msg) {
+      txtDialogue.textContent = msg;
+    }
+
+    function updateActionButtons() {
+      // Find the first customer who is NOT leaving
+      const frontCust = queue.find(c => !c.isLeaving);
+      const isClerkReady = (CLERK.state === 'at_till');
+
+      btnServeAdvice.disabled = true;
+      btnProcessMix.disabled = true;
+
+      if (!shiftActive) {
+        txtAdviceTitle.textContent = "CONSULT / SAMPLE";
+        txtAdviceSub.textContent = "[KEY: 1]";
+        txtMixTitle.textContent = "MIX ORDER";
+        txtMixSub.textContent = "[KEY: 2 / SPACE]";
+        btnProcessMix.className = "act-btn btn-mix";
+        return;
+      }
+
+      if (!isClerkReady) {
+        txtAdviceTitle.textContent = "TILL UNMANNED";
+        txtAdviceSub.textContent = "Associate mixing paint!";
+        txtMixTitle.textContent = `MIXING (${CLERK.tinsRemaining}s)`;
+        txtMixSub.textContent = "Shaker locked in back";
+        btnProcessMix.className = "act-btn btn-mix";
+        return;
+      }
+
+      if (!frontCust) {
+        txtAdviceTitle.textContent = "WAITING...";
+        txtAdviceSub.textContent = "Queue clear";
+        txtMixTitle.textContent = "STAND BY";
+        txtMixSub.textContent = "Ready at counter";
+        btnProcessMix.className = "act-btn btn-mix";
+        return;
+      }
+
+      // Customer is at till and associate is present -> Enable corresponding button!
+      if (frontCust.category === 'ADVICE') {
+        btnServeAdvice.disabled = false;
+        txtAdviceTitle.textContent = (frontCust.tins === 1) ? "SERVE SAMPLE POT" : "COLOUR ADVICE";
+        txtAdviceSub.textContent = `[KEY: 1] • +£${frontCust.val}`;
+        
+        txtMixTitle.textContent = "MIX ORDER";
+        txtMixSub.textContent = "Not requested";
+        btnProcessMix.className = "act-btn btn-mix";
+      } else {
+        // Customer has paint to mix (MIX_SMALL or TRADE_LARGE)
+        btnProcessMix.disabled = false;
+        const tins = frontCust.tins;
+
+        txtAdviceTitle.textContent = "CONSULT / SAMPLE";
+        txtAdviceSub.textContent = "Wants paint order";
+
+        if (currentRound === 2 && tins > 5) {
+          // Round 2 Hub Model: Orders >5 tins dispatched to 2-hr London Hub in 1.5s!
+          btnProcessMix.className = "act-btn btn-hub";
+          txtMixTitle.textContent = `⚡ DISPATCH ${tins} TINS TO HUB`;
+          txtMixSub.textContent = `[KEY: 2 / SPACE] • 1.5s Off-Site (+£${frontCust.val})`;
+        } else {
+          // Round 1 (all orders) or Round 2 (<=5 tins): Mixed on-site at strictly 1s per tin!
+          btnProcessMix.className = "act-btn btn-mix";
+          txtMixTitle.textContent = `MIX ${tins} TINS ON-SITE`;
+          txtMixSub.textContent = `[KEY: 2 / SPACE] • Locks till ${tins}s (+£${frontCust.val})`;
+        }
+      }
+    }
+
+    function handleServeAdviceAction() {
+      if (!shiftActive || CLERK.state !== 'at_till') return;
+      const custIndex = queue.findIndex(c => !c.isLeaving);
+      if (custIndex === -1) return;
+      const cust = queue[custIndex];
+      if (cust.category !== 'ADVICE') return;
+
+      stats.captured += cust.val;
+      sfx.playRegisterChime();
+      floaters.push({ x: cust.x, y: cust.y - 20, text: `+£${cust.val}`, color: '#06d6a0', alpha: 1.0 });
+      setDialogue(`CLERK: Completed ${cust.name}! (+£${cust.val})`);
+      queue.splice(custIndex, 1);
+      updateActionButtons();
+    }
+
+    function handleProcessMixAction() {
+      if (!shiftActive || CLERK.state !== 'at_till') return;
+      const custIndex = queue.findIndex(c => !c.isLeaving);
+      if (custIndex === -1) return;
+      const cust = queue[custIndex];
+      if (cust.category === 'ADVICE') return;
+
+      const tins = cust.tins;
+      const sendToHub = (currentRound === 2 && tins > 5);
+
+      if (sendToHub) {
+        // Dispatched off-site to London Hub van in 1.5s
+        stats.captured += cust.val;
+        stats.hubOrders++;
+        sfx.playHubWhoosh();
+        floaters.push({ x: cust.x, y: cust.y - 20, text: `HUB SENT! +£${cust.val}`, color: '#4cc9f0', alpha: 1.0 });
+        setDialogue(`⚡ Dispatched ${tins} tins to 2-Hr London Hub! Counter remains staffed.`);
+        queue.splice(custIndex, 1);
+      } else {
+        // Mixed on-site: strictly 1 second per tin (tins * 60 frames)
+        stats.captured += cust.val;
+        CLERK.state = 'walking_to_shaker';
+        CLERK.tinsRemaining = tins;
+        CLERK.busyMax = tins * 60;
+        CLERK.busyTimer = CLERK.busyMax;
+        setDialogue(`CLERK: Left counter to shake ${tins} tins (${tins}s). Counter is UNMANNED!`);
+        queue.splice(custIndex, 1);
+      }
+      updateActionButtons();
+    }
+
+    btnServeAdvice.addEventListener('click', handleServeAdviceAction);
+    btnProcessMix.addEventListener('click', handleProcessMixAction);
+
+    window.addEventListener('keydown', (e) => {
+      if (!shiftActive) return;
+      if (e.key === '1') {
+        e.preventDefault();
+        handleServeAdviceAction();
+      } else if (e.key === '2' || e.code === 'Space') {
+        e.preventDefault();
+        handleProcessMixAction();
+      }
+    });
+
+    /* ==========================================================================
+       4. Game Loop, Timing & Metrics
+       ========================================================================== */
+    function update() {
+      if (!shiftActive) return;
+
+      // Shift frames
+      shiftFramesLeft--;
+      shiftSecondsLeft = Math.max(0, Math.ceil(shiftFramesLeft / 60));
+      document.getElementById('txtShiftTimer').textContent = `SHIFT: ${shiftSecondsLeft}s`;
+
+      if (shiftFramesLeft <= 0) {
+        shiftActive = false;
+        endCurrentRound();
+        return;
+      }
+
+      // Spawning Customers
+      spawnTimer++;
+      if (spawnTimer >= 135) {
+        spawnTimer = 0;
+        if (queue.length < 5) {
+          queue.push(new Customer());
+        }
+      }
+
+      // Update Customers in Queue
+      for (let i = 0; i < queue.length; i++) {
+        queue[i].update(i);
+      }
+      for (let i = queue.length - 1; i >= 0; i--) {
+        if (queue[i].isLeaving && queue[i].x <= -28) {
+          queue.splice(i, 1);
+        }
+      }
+
+      // Clerk AI & Shaker Mechanics
+      if (CLERK.state === 'walking_to_shaker') {
+        stats.unmannedSeconds += (1 / 60);
+        const dx = CLERK.shakerX - CLERK.x;
+        const dy = CLERK.shakerY - CLERK.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist > CLERK.speed) {
+          CLERK.x += (dx / dist) * CLERK.speed;
+          CLERK.y += (dy / dist) * CLERK.speed;
+        } else {
+          CLERK.x = CLERK.shakerX;
+          CLERK.y = CLERK.shakerY;
+          CLERK.state = 'mixing';
+          sfx.startShakerHum();
+        }
+      } else if (CLERK.state === 'mixing') {
+        stats.unmannedSeconds += (1 / 60);
+        CLERK.busyTimer--;
+        CLERK.tinsRemaining = Math.max(1, Math.ceil(CLERK.busyTimer / 60));
+
+        if (CLERK.busyTimer <= 0) {
+          sfx.stopShakerHum();
+          CLERK.state = 'walking_to_till';
+        }
+      } else if (CLERK.state === 'walking_to_till') {
+        stats.unmannedSeconds += (1 / 60);
+        const dx = CLERK.homeX - CLERK.x;
+        const dy = CLERK.homeY - CLERK.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist > CLERK.speed) {
+          CLERK.x += (dx / dist) * CLERK.speed;
+          CLERK.y += (dy / dist) * CLERK.speed;
+        } else {
+          CLERK.x = CLERK.homeX;
+          CLERK.y = CLERK.homeY;
+          CLERK.state = 'at_till';
+          sfx.playRegisterChime();
+          setDialogue(`CLERK: Returned to till. Ready to serve!`);
+        }
+      }
+
+      // Update Floating Numbers
+      for (let i = floaters.length - 1; i >= 0; i--) {
+        floaters[i].y -= 0.5;
+        floaters[i].alpha -= 0.018;
+        if (floaters[i].alpha <= 0) floaters.splice(i, 1);
+      }
+
+      // Live KPI Display
+      document.getElementById('kpiCaptured').textContent = `£${stats.captured}`;
+      document.getElementById('kpiLost').textContent = `£${stats.lost}`;
+      document.getElementById('kpiUnmanned').textContent = `${Math.floor(stats.unmannedSeconds)}s`;
+      document.getElementById('kpiHub').textContent = `${stats.hubOrders}`;
+
+      updateActionButtons();
+    }
+
+    /* ==========================================================================
+       5. 8-Bit Pixel-Art Rendering (Classic Poké Mart Interior)
+       ========================================================================== */
+    function px(x, y, w, h, col) {
+      ctx.fillStyle = col;
+      ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h));
+    }
+
+    function renderMartEnvironment() {
+      // Checkered Mart Floor (16x16 tiles)
+      for (let r = 0; r < 18; r++) {
+        for (let c = 0; c < 20; c++) {
+          ctx.fillStyle = (r + c) % 2 === 0 ? '#dedbd2' : '#b0c4b1';
+          ctx.fillRect(c * 16, r * 16, 16, 16);
+        }
+      }
+
+      // Teal / Forest Green Upper Wall
+      px(0, 0, 320, 52, '#2d6a4f');
+      px(0, 48, 320, 4, '#1b4332');
+
+      // Posters / Plaques on wall
+      px(140, 10, 18, 22, '#f8f9fa');
+      px(142, 12, 14, 18, '#40916c');
+      px(164, 10, 18, 22, '#f8f9fa');
+      px(166, 12, 14, 18, '#40916c');
+
+      // Merchandise Shelves (Right side)
+      px(194, 8, 116, 40, '#1d3557');
+      px(196, 10, 112, 36, '#457b9d');
+      px(196, 22, 112, 2, '#1d3557');
+      for (let i = 0; i < 6; i++) {
+        // Potion / Paint jar
+        px(204 + (i * 18), 13, 6, 8, '#e63946');
+        px(205 + (i * 18), 11, 4, 2, '#f1faee');
+        // Pokéball / Paint sample
+        px(204 + (i * 18), 26, 7, 7, '#f1faee');
+        px(204 + (i * 18), 26, 7, 4, '#e63946');
+        px(206 + (i * 18), 29, 3, 2, '#111');
+      }
+
+      // Shaker Bench & Tinting Station (Top Left)
+      px(44, 24, 68, 30, '#6c757d');
+      px(44, 50, 68, 4, '#495057');
+      // Tint dispensers
+      px(50, 12, 8, 12, '#9d0208');
+      px(62, 12, 8, 12, '#2a9d8f');
+      px(74, 12, 8, 12, '#3a86ff');
+
+      // Paint Shaker Machine Cabinet
+      let jitter = 0;
+      if (CLERK.state === 'mixing') {
+        jitter = (Math.random() - 0.5) * 2;
+      }
+      px(86 + jitter, 14, 22, 22, '#ced4da');
+      px(88 + jitter, 18, 18, 14, '#212529');
+      if (CLERK.state === 'mixing') {
+        px(94 + jitter, 21, 6, 8, '#e63946'); // vibrating tin
+      }
+      ctx.fillStyle = '#111';
+      ctx.font = '5px "Press Start 2P"';
+      ctx.fillText("SHAKER", 54, 60);
+
+      // Green Counter Desk (L-Shape)
+      px(180, 84, 130, 48, '#52b788');
+      px(180, 84, 130, 5, '#74c69d');
+      px(180, 128, 130, 4, '#2d6a4f');
+      px(180, 84, 18, 48, '#40916c'); // corner desk
+
+      // Cash Register
+      px(194, 92, 18, 16, '#495057');
+      px(196, 94, 14, 6, '#e9ecef');
+      px(196, 102, 14, 5, '#212529');
+
+      // Potted Plant (Left)
+      function plant(x, y) {
+        px(x + 3, y + 10, 10, 8, '#6f4e37');
+        px(x, y, 16, 10, '#2d6a4f');
+        px(x + 3, y - 2, 10, 5, '#52b788');
+      }
+      plant(12, 84);
+      plant(12, 210);
+
+      // Swatch displays (Bottom Right)
+      px(190, 220, 120, 36, '#343a40');
+      const swatches = ['#e63946','#f4a261','#e9c46a','#2a9d8f','#3a86ff'];
+      for (let s = 0; s < 5; s++) {
+        px(198 + (s * 22), 226, 16, 24, swatches[s]);
+      }
+    }
+
+    function drawClerk(x, y) {
+      ctx.save();
+      ctx.translate(Math.floor(x), Math.floor(y));
+
+      // Shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.25)';
+      ctx.beginPath();
+      ctx.ellipse(0, 12, 8, 3, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Shirt (Mart blue)
+      px(-7, -4, 14, 12, '#457b9d');
+      px(-2, -4, 4, 7, '#f1faee'); // collar
+      // Head
+      px(-6, -16, 12, 12, '#f4a261');
+      // Brown hair
+      px(-7, -18, 14, 6, '#6f4e37');
+      px(-7, -14, 2, 5, '#6f4e37');
+      px(5, -14, 2, 5, '#6f4e37');
+      // Eyes
+      px(-4, -11, 2, 2, '#111');
+      px(2, -11, 2, 2, '#111');
+      // Trousers
+      px(-5, 8, 4, 5, '#1d3557');
+      px(1, 8, 4, 5, '#1d3557');
+
+      ctx.restore();
+    }
+
+    function drawCustomer(cust) {
+      ctx.save();
+      ctx.translate(Math.floor(cust.x), Math.floor(cust.y));
+
+      // Shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.25)';
+      ctx.beginPath();
+      ctx.ellipse(0, 12, 8, 3, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      const pal = cust.palette;
+
+      // Shirt
+      px(-6, -4, 12, 12, pal.shirt);
+      // Trousers
+      px(-5, 8, 4, 5, pal.pants);
+      px(1, 8, 4, 5, pal.pants);
+      // Head
+      px(-5, -16, 10, 12, '#f4a261');
+      // Hair
+      px(-6, -18, 12, 5, pal.hair);
+
+      // Hat
+      if (pal.hatType === 'cap') {
+        px(-7, -20, 14, 4, pal.hat);
+        px(-9, -17, 5, 2, pal.hat); // cap visor
+      } else if (pal.hatType === 'straw') {
+        px(-9, -19, 18, 3, pal.hat);
+        px(-5, -23, 10, 4, pal.hat);
+      }
+
+      // Eyes
+      if (cust.isLeaving) {
+        px(-4, -11, 3, 2, '#111');
+        px(1, -11, 3, 2, '#111');
+        px(-2, -7, 4, 1, '#d00000'); // angry
+      } else {
+        px(-3, -11, 2, 2, '#111');
+        px(2, -11, 2, 2, '#111');
+      }
+
+      ctx.restore();
+    }
+
+    function drawSpeechBubble(x, y, text) {
+      px(x - 20, y - 32, 40, 14, '#ffffff');
+      px(x - 21, y - 30, 42, 10, '#ffffff');
+      px(x - 20, y - 33, 40, 1, '#000000');
+      px(x - 20, y - 18, 40, 1, '#000000');
+      px(x - 22, y - 30, 1, 10, '#000000');
+      px(x + 21, y - 30, 1, 10, '#000000');
+
+      // tail
+      px(x - 2, y - 18, 4, 2, '#fff');
+      px(x - 1, y - 16, 2, 2, '#000');
+
+      ctx.fillStyle = '#000';
+      ctx.font = '5.5px "Press Start 2P"';
+      ctx.textAlign = 'center';
+      ctx.fillText(text, x, y - 22);
+      ctx.textAlign = 'left';
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      renderMartEnvironment();
+
+      // Draw Clerk
+      drawClerk(CLERK.x, CLERK.y);
+
+      // Shaker Progress Banner
+      if (CLERK.state === 'mixing') {
+        px(CLERK.x - 22, CLERK.y - 32, 44, 10, '#d90429');
+        ctx.fillStyle = '#fff';
+        ctx.font = '5px "Press Start 2P"';
+        ctx.fillText(`MIX ${CLERK.tinsRemaining}s`, CLERK.x - 18, CLERK.y - 25);
+      }
+
+      // Counter Unmanned Alert
+      if (CLERK.state !== 'at_till') {
+        px(180, 76, 130, 10, '#d90429');
+        ctx.fillStyle = '#ffd166';
+        ctx.font = '5px "Press Start 2P"';
+        ctx.fillText("⚠️ COUNTER UNMANNED", 186, 83);
+      }
+
+      // Draw Queue (Reverse order for correct layering)
+      for (let i = queue.length - 1; i >= 0; i--) {
+        const cust = queue[i];
+        drawCustomer(cust);
+
+        // Patience Gauge
+        const ratio = Math.max(0, cust.patience / cust.maxPatience);
+        const col = ratio > 0.5 ? '#06d6a0' : ratio > 0.25 ? '#ffd166' : '#ef476f';
+        px(cust.x - 10, cust.y - 30, 20, 3, '#000');
+        px(cust.x - 9, cust.y - 29, Math.floor(18 * ratio), 1, col);
+
+        if (!cust.isLeaving) {
+          if (i === 0) {
+            drawSpeechBubble(cust.x, cust.y - 8, cust.bubble);
+          } else if (ratio < 0.4) {
+            drawSpeechBubble(cust.x, cust.y - 8, "WAIT...");
+          }
+        } else {
+          // Angry '!' bubble
+          px(cust.x - 5, cust.y - 40, 10, 10, '#ef476f');
+          ctx.fillStyle = '#fff';
+          ctx.font = '7px "Press Start 2P"';
+          ctx.fillText("!", cust.x - 2, cust.y - 32);
+        }
+      }
+
+      // Floating +£ / -£
+      floaters.forEach(f => {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, f.alpha);
+        ctx.fillStyle = f.color;
+        ctx.font = '7px "Press Start 2P"';
+        ctx.fillText(f.text, f.x - 10, f.y);
+        ctx.restore();
+      });
+    }
+
+    function gameLoop() {
+      update();
+      render();
+      requestAnimationFrame(gameLoop);
+    }
+
+    /* ==========================================================================
+       6. Round Progression & Executive Debrief Modal
+       ========================================================================== */
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalHeader = document.getElementById('modalHeader');
+    const modalBodyText = document.getElementById('modalBodyText');
+    const btnModalAction = document.getElementById('btnModalAction');
+
+    function startShift(roundNum) {
+      currentRound = roundNum;
+      shiftActive = true;
+      shiftSecondsLeft = 30;
+      shiftFramesLeft = 30 * 60;
+      spawnTimer = 0;
+      queue.length = 0;
+      floaters.length = 0;
+
+      stats = {
+        captured: 0,
+        lost: 0,
+        walkouts: 0,
+        unmannedSeconds: 0,
+        hubOrders: 0
+      };
+
+      CLERK.x = CLERK.homeX;
+      CLERK.y = CLERK.homeY;
+      CLERK.state = 'at_till';
+      sfx.stopShakerHum();
+
+      // Seed immediate 10-tin customer to trigger the strategic moment
+      queue.push(new Customer('TRADE_10'));
+
+      modalOverlay.style.display = 'none';
+
+      if (currentRound === 1) {
+        document.getElementById('txtRoundTag').textContent = "ROUND 1: IN-STORE MIXING";
+        setDialogue("SHIFT STARTED: Customer at till needs 10 tins of paint!");
+      } else {
+        document.getElementById('txtRoundTag').textContent = "ROUND 2: 2-HR LONDON HUB";
+        setDialogue("SHIFT STARTED: Orders >5 tins can be dispatched to the London Hub!");
+      }
+
+      updateActionButtons();
+    }
+
+    function endCurrentRound() {
+      sfx.stopShakerHum();
+      modalOverlay.style.display = 'flex';
+
+      if (currentRound === 1) {
+        round1Stats = { ...stats };
+        modalHeader.textContent = "ROUND 1: BOTTLENECK REPORT";
+        modalBodyText.innerHTML = `
+          <div style="background:#f1faee; padding:6px; border-radius:4px; font-size:6.5px; margin-bottom:6px;">
+            <div>• Revenue Captured: <b style="color:#06d6a0;">£${stats.captured}</b></div>
+            <div>• Lost to Walkouts: <b style="color:#ef476f;">£${stats.lost}</b></div>
+            <div>• Walkouts: <b style="color:#ef476f;">${stats.walkouts} customers</b></div>
+            <div>• Counter Unmanned: <b style="color:#ffd166;">${Math.floor(stats.unmannedSeconds)}s / 30s</b></div>
+          </div>
+          <strong style="color:#ef476f;">The In-Store Bottleneck:</strong><br>
+          Shaking tins locked the associate away from the till. Impatient retail customers walked out!<br><br>
+          <strong>Ready for Round 2?</strong> In Round 2, orders &gt;5 tins route to the 2-Hour London Hub in 1.5s!
+        `;
+        btnModalAction.textContent = "▶ START ROUND 2 (HUB MODEL)";
+      } else {
+        modalHeader.textContent = "EXECUTIVE COMPARISON REPORT";
+        modalBodyText.innerHTML = `
+          <div style="text-align:center; color:#0b6742; margin-bottom:6px;">
+            <b>ROUND 1 (IN-STORE) vs ROUND 2 (HUB)</b>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; background:#f1faee; padding:6px; border-radius:4px; font-size:6.5px;">
+            <div>R1 Sales: <b style="color:#ef476f;">£${round1Stats.captured}</b></div>
+            <div>R2 Sales: <b style="color:#06d6a0;">£${stats.captured}</b></div>
+            <div>R1 Lost: <b style="color:#ef476f;">£${round1Stats.lost}</b></div>
+            <div>R2 Lost: <b style="color:#06d6a0;">£${stats.lost}</b></div>
+            <div>R1 Walkouts: <b style="color:#ef476f;">${round1Stats.walkouts}</b></div>
+            <div>R2 Walkouts: <b style="color:#06d6a0;">${stats.walkouts}</b></div>
+          </div>
+          <div style="margin-top:6px; font-size:6.5px;">
+            <strong style="color:#0b6742;">Key Takeaway:</strong><br>
+            Routing &gt;5 tins off-site kept the associate at the counter, capturing high-margin colour consultations and stopping walkouts!
+          </div>
+        `;
+        btnModalAction.textContent = "↺ REPLAY SIMULATION";
+      }
+    }
+
+    btnModalAction.addEventListener('click', () => {
+      sfx.init();
+      if (currentRound === 1 && !round1Stats) {
+        startShift(1);
+      } else if (currentRound === 1 && round1Stats) {
+        startShift(2);
+      } else {
+        round1Stats = null;
+        startShift(1);
+      }
+    });
+
+    window.onload = function() {
+      requestAnimationFrame(gameLoop);
+      updateActionButtons();
+    };
+  </script>
+</body>
+</html>
