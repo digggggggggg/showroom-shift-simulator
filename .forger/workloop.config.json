@@ -39,7 +39,7 @@
   },
   "skills": {},
   "tracker": {
-    "kind": "local",
+    "kind": "github",
     "label": "ready-for-agent",
     "ignore": [
       "wayfinder:*"
