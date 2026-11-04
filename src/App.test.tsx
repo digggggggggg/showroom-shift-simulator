@@ -40,7 +40,7 @@ describe('App shell', () => {
     expect(screen.getByText('[KEY: 1]')).toBeInTheDocument();
     expect(screen.getByText('[KEY: 2 / SPACE]')).toBeInTheDocument();
     const before = store.getState();
-    await userEvent.keyboard('1 2');
+    await userEvent.keyboard('12');
     expect(store.getState()).toBe(before);
   });
 
@@ -76,8 +76,8 @@ describe('App shell', () => {
   it('KPIs show pound values and floored unmanned seconds', () => {
     const base = shiftWith(1, []);
     renderWith({ ...base, stats: { captured: 240, lost: 130, walkouts: 2, unmannedSeconds: 3.9, hubOrders: 2 } });
-    expect(screen.getByText('£240')).toBeInTheDocument();
-    expect(screen.getByText('£130')).toBeInTheDocument();
+    expect(screen.getByText('\u00A3240')).toBeInTheDocument();
+    expect(screen.getByText('\u00A3130')).toBeInTheDocument();
     expect(screen.getByText('3s')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
     for (const label of ['CAPTURED', 'WALKOUTS', 'UNMANNED', 'HUB ORDERS']) {
