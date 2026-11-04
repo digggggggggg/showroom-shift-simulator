@@ -1,0 +1,54 @@
+/* CSS colours of the original, the approved design (docs/adr/0002). */
+:root {
+  --color-page-glow: #2a3439;
+  --color-page-edge: #0d1215;
+  --color-text-light: #e6edf3;
+
+  --color-casing-light: #7c3fba;
+  --color-casing-mid: #582490;
+  --color-casing-dark: #3e1669;
+  --color-casing-border: #2a0b4d;
+  --color-casing-highlight: rgba(255, 255, 255, 0.3);
+  --color-casing-shade: rgba(0, 0, 0, 0.5);
+  --color-casing-drop: rgba(0, 0, 0, 0.8);
+  --color-brand-text: #e6cdff;
+
+  --color-led-on: #39ff14;
+  --color-led-off: #ef476f;
+  --color-mute-bg: #2a0b4d;
+  --color-mute-border: #c299fc;
+  --color-mute-text: #f1e4ff;
+
+  --color-bezel: #181d24;
+  --color-bezel-border: #0f1216;
+  --color-bezel-inset: rgba(0, 0, 0, 0.9);
+  --color-status-text: #ffd166;
+  --color-screen: #e4ecdc;
+  --color-black: #000;
+  --color-white: #fff;
+
+  --color-dialogue-bg: #fbfbf4;
+  --color-dialogue-border: #1b2620;
+  --color-ink: #17241d;
+
+  --color-advice-bg: #06d6a0;
+  --color-advice-text: #032b21;
+  --color-mix-bg: #e76f51;
+  --color-mix-text: #fff;
+  --color-hub-bg: #4cc9f0;
+  --color-hub-text: #032238;
+  --color-hub-shadow: #0077b6;
+
+  --color-kpi-bg: #151a21;
+  --color-kpi-border: #2d3540;
+  --color-good: #06d6a0;
+  --color-bad: #ef476f;
+  --color-warn: #ffd166;
+  --color-info: #4cc9f0;
+
+  --color-overlay: rgba(10, 14, 18, 0.88);
+  --color-modal-bg: #fdfbf4;
+  --color-modal-border: #17271e;
+  --color-modal-heading: #0b6742;
+  --color-modal-panel: #f1faee;
+}

@@ -1,4 +1,4 @@
-# Development process - <project name>
+# Development process - showroom-shift-simulator
 
 One ticket per iteration, quality gates green, small clean commits.
 **On GitHub, the issues are the backlog**: an open issue with the intake label is
@@ -11,7 +11,7 @@ commands are generic; everything specific to THIS project lives here and in
 
 ## What this repo is
 
-<One paragraph: what the project is, where it sits in the stack, who consumes it.>
+A React 19 + strict TypeScript port (Vite, bun) of `original/showroom-shift-simulator.html`, a single-file pixel-art browser game about a paint showroom's till: one clerk, a queue of customers, and a two-round comparison of in-store mixing against hub dispatch. It is a standalone static web app played in the browser; the owner deploys it to the linked Vercel project. The original is the approved design (`docs/adr/0002-original-is-the-design.md`) and stays in the repo as reference only; the game logic is a pure, seeded, fixed-timestep simulation (`docs/adr/0001-pure-sim-fixed-timestep.md`).
 
 ## The gates
 

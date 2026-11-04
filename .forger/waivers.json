@@ -1,0 +1,22 @@
+{
+  "waivers": [
+    {
+      "opinion": "base.ascii-punctuation",
+      "path": "original/**",
+      "reason": "original/ is the untouched reference implementation and approved design; its copy (GBP sign, bullets, emoji) is preserved verbatim",
+      "approved_by": "docs/adr/0002-original-is-the-design.md"
+    },
+    {
+      "opinion": "base.nothing-personal",
+      "path": ".claude/settings.json",
+      "reason": "the forger hook command needs the absolute path to the locally installed plugin",
+      "approved_by": "forger setup"
+    },
+    {
+      "opinion": "base.nothing-personal",
+      "path": ".forger/workloop.config.json",
+      "reason": "the gates command needs the absolute path to the locally installed forger plugin",
+      "approved_by": "forger setup"
+    }
+  ]
+}
