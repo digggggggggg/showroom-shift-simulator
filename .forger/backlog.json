@@ -23,14 +23,33 @@
         "docs/screenshots/original/ holds phone and desktop captures of the original",
         "README documents dev, gates, e2e"
       ],
-      "files": ["package.json", "vite.config.ts", "tsconfig*.json", "eslint.config.js", "index.html", "src/main.tsx", "src/App.tsx", "src/styles/tokens.css", "src/game/palette.ts", ".forger/ui.json", ".forger/process.md", "README.md", "docs/screenshots/original/"],
-      "reuse": ["original/showroom-shift-simulator.html <style> block for CSS colours and layout", "docs/adr/0002-original-is-the-design.md"]
+      "files": [
+        "package.json",
+        "vite.config.ts",
+        "tsconfig*.json",
+        "eslint.config.js",
+        "index.html",
+        "src/main.tsx",
+        "src/App.tsx",
+        "src/styles/tokens.css",
+        "src/game/palette.ts",
+        ".forger/ui.json",
+        ".forger/process.md",
+        "README.md",
+        "docs/screenshots/original/"
+      ],
+      "reuse": [
+        "original/showroom-shift-simulator.html <style> block for CSS colours and layout",
+        "docs/adr/0002-original-is-the-design.md"
+      ]
     },
     "sim-core": {
       "priority": "P0",
       "status": "completed",
       "type": "feature",
-      "depends_on": ["scaffold"],
+      "depends_on": [
+        "scaffold"
+      ],
       "effort": "medium",
       "issue": null,
       "description": "Port all game logic from the original's script into a pure module under src/game/ per ADR 1. config.ts holds every tuning number with the original's values (30 s shift at 60 steps/s, spawn every 135 steps while queue length < 5, patience 660 steps, 1.8x drain when unmanned, 1 s (60 steps) per tin on site, hub threshold > 5 tins in Round 2, clerk speed 2.4, customer speed 2.2, queue slots, clerk home/shaker positions, customer category roll thresholds and values, floater rise/fade). rng.ts is a small seeded PRNG (e.g. mulberry32). sim.ts exposes createInitialState(), startShift(state, round, rng) (resets stats and seeds the guaranteed 10-tin TRADE customer), step(state, rng) for one fixed step, serveAdvice(state) and processMix(state) actions, each returning the new state plus an events array (chime, whoosh, coins, humStart, humStop, dialogue text, roundEnded). Round flow: Round 1 end stores round1 stats; Round 2 end produces comparison data; replay resets to Round 1. Also export a pure deriveActionButtons(state) that returns the two buttons' enabled flag, title, subtitle and variant (mix | hub) exactly matching the original's updateActionButtons text. Preserve original quirks: leaving customers count toward the queue cap; patience drains while walking in; unmanned seconds accrue in every non-at_till clerk state.",
@@ -45,16 +64,29 @@
         "deriveActionButtons matches the original's labels for: no shift, clerk away, empty queue, advice customer, small mix, Round 2 hub order",
         "Vitest coverage for src/game/ sim logic"
       ],
-      "files": ["src/game/config.ts", "src/game/rng.ts", "src/game/sim.ts", "src/game/types.ts", "src/game/buttons.ts", "src/game/*.test.ts"],
-      "reuse": ["original/showroom-shift-simulator.html sections 2-4 and 6 (Customer class, handle*Action, update(), startShift/endCurrentRound)", "docs/adr/0001-pure-sim-fixed-timestep.md", "GLOSSARY.md"]
+      "files": [
+        "src/game/config.ts",
+        "src/game/rng.ts",
+        "src/game/sim.ts",
+        "src/game/types.ts",
+        "src/game/buttons.ts",
+        "src/game/*.test.ts"
+      ],
+      "reuse": [
+        "original/showroom-shift-simulator.html sections 2-4 and 6 (Customer class, handle*Action, update(), startShift/endCurrentRound)",
+        "docs/adr/0001-pure-sim-fixed-timestep.md",
+        "GLOSSARY.md"
+      ]
     },
     "canvas-render": {
       "priority": "P1",
       "status": "not_started",
       "type": "feature",
-      "depends_on": ["sim-core"],
+      "depends_on": [
+        "sim-core"
+      ],
       "effort": "medium",
-      "issue": null,
+      "issue": 3,
       "description": "Port the original's 8-bit drawing (renderMartEnvironment, drawClerk, drawCustomer, drawSpeechBubble, mixing banner, COUNTER UNMANNED alert, patience gauges, floaters) to src/game/render.ts as functions of (ctx, state) using colours from palette.ts only. Visual randomness (shaker jitter) must not consume the sim RNG. A GameCanvas React component owns a 320x288 canvas (pixelated, CSS-scaled), and a useGameLoop hook runs requestAnimationFrame: accumulate real elapsed time capped at 250 ms per frame, run as many fixed sim steps as fit, skip advancing while document.hidden, then render once. Wait for document.fonts.load of Press Start 2P before the first text draw. Replace the emoji in the unmanned banner with a pixel-drawn warning glyph or plain text so it renders in the pixel font. Loop stops on unmount. The sim state is exposed to React through a small store (useSyncExternalStore) for later tickets.",
       "acceptance_criteria": [
         "Game speed is independent of refresh rate: a unit test of the loop driver with fake timestamps at 60 Hz and 120 Hz advances the same number of steps per second of real time",
@@ -63,16 +95,28 @@
         "The canvas matches docs/screenshots/original/ for the start state (screenshot updated under docs/screenshots/)",
         "Unmounting GameCanvas cancels the animation frame (test)"
       ],
-      "files": ["src/game/render.ts", "src/game/loop.ts", "src/game/store.ts", "src/components/GameCanvas.tsx", "src/game/loop.test.ts"],
-      "reuse": ["original/showroom-shift-simulator.html section 5", "src/game/palette.ts", "docs/adr/0001-pure-sim-fixed-timestep.md"]
+      "files": [
+        "src/game/render.ts",
+        "src/game/loop.ts",
+        "src/game/store.ts",
+        "src/components/GameCanvas.tsx",
+        "src/game/loop.test.ts"
+      ],
+      "reuse": [
+        "original/showroom-shift-simulator.html section 5",
+        "src/game/palette.ts",
+        "docs/adr/0001-pure-sim-fixed-timestep.md"
+      ]
     },
     "hud-controls": {
       "priority": "P1",
       "status": "not_started",
       "type": "feature",
-      "depends_on": ["canvas-render"],
+      "depends_on": [
+        "canvas-render"
+      ],
       "effort": "medium",
-      "issue": null,
+      "issue": 4,
       "description": "Build the React shell around the canvas matching the original: Game Boy frame with brand bar (title, PWR LED, mute button placeholder wired later), screen bezel with sub-status bar (round tag and SHIFT timer), canvas, dialogue box, the two action buttons and the four KPI cards (CAPTURED, WALKOUTS, UNMANNED, HUB ORDERS). Button labels and enabled state come from deriveActionButtons; KPIs and timer from the store. The dialogue box is an aria-live=polite region. Keyboard: 1 serves advice, 2 or Space processes the mix, only while a shift is active, preventDefault so Space does not scroll. Buttons are real <button>s with visible focus styles. Styles in CSS modules or plain CSS using tokens.css variables. UI states: before first shift (buttons disabled, default labels), shift running with clerk at till, clerk away (TILL UNMANNED / MIXING Ns), queue empty (WAITING / STAND BY), after shift ended (disabled).",
       "acceptance_criteria": [
         "Testing Library tests: clicking each button and pressing 1 / 2 / Space dispatch the right action only when enabled",
@@ -82,16 +126,26 @@
         "Layout holds at 390 px wide without horizontal scroll; screenshots in docs/screenshots/ updated and comparable to docs/screenshots/original/",
         "check ui passes"
       ],
-      "files": ["src/App.tsx", "src/components/", "src/styles/"],
-      "reuse": ["original/showroom-shift-simulator.html markup and <style>", "src/game/buttons.ts deriveActionButtons", "src/game/store.ts"]
+      "files": [
+        "src/App.tsx",
+        "src/components/",
+        "src/styles/"
+      ],
+      "reuse": [
+        "original/showroom-shift-simulator.html markup and <style>",
+        "src/game/buttons.ts deriveActionButtons",
+        "src/game/store.ts"
+      ]
     },
     "round-modal": {
       "priority": "P1",
       "status": "not_started",
       "type": "feature",
-      "depends_on": ["hud-controls"],
+      "depends_on": [
+        "hud-controls"
+      ],
       "effort": "small",
-      "issue": null,
+      "issue": 5,
       "description": "Port the overlay modal: Round 1 briefing (shown on load), Bottleneck report after Round 1 (captured, lost, walkouts, unmanned of 30 s), Comparison report after Round 2 (R1 vs R2 sales, lost, walkouts, key takeaway), with buttons START ROUND 1, START ROUND 2 (HUB MODEL) and REPLAY SIMULATION driving startShift. Copy matches the original; render as JSX, not innerHTML. Accessible dialog: role=dialog, aria-modal, aria-labelledby the header, focus moves to the action button on open and is trapped inside, Enter activates. The modal covers the canvas only, as in the original.",
       "acceptance_criteria": [
         "Tests walk briefing -> Round 1 -> report -> Round 2 -> comparison -> replay with values taken from sim stats",
@@ -99,16 +153,23 @@
         "No dangerouslySetInnerHTML",
         "Screenshots of each modal state added under docs/screenshots/"
       ],
-      "files": ["src/components/RoundModal.tsx", "src/components/RoundModal.test.tsx"],
-      "reuse": ["original/showroom-shift-simulator.html section 6 and modal markup"]
+      "files": [
+        "src/components/RoundModal.tsx",
+        "src/components/RoundModal.test.tsx"
+      ],
+      "reuse": [
+        "original/showroom-shift-simulator.html section 6 and modal markup"
+      ]
     },
     "sound": {
       "priority": "P2",
       "status": "not_started",
       "type": "feature",
-      "depends_on": ["hud-controls"],
+      "depends_on": [
+        "hud-controls"
+      ],
       "effort": "small",
-      "issue": null,
+      "issue": 6,
       "description": "Port SoftSoundFX to src/audio/sfx.ts: register chime, hub whoosh, losing coins, shaker hum, same frequencies, waveforms and gains. Takes an injectable AudioContext factory so tests use a fake. The context is created lazily on the first user gesture and resumed if suspended. Sim events (chime, whoosh, coins, humStart, humStop) drive it. Fix the original's defects: the hum stops on round end, on mute and on unmount; muting while the hum plays silences it. Mute toggle in the brand bar (SFX: ON / OFF, LED colour change) is persisted in localStorage with try/catch; it defaults to on when storage is unavailable. Missing AudioContext support degrades silently without errors.",
       "acceptance_criteria": [
         "Unit tests with a fake AudioContext: each sound schedules the original's oscillator frequencies; no sound plays when muted",
@@ -116,16 +177,26 @@
         "Mute survives a reload via localStorage; a throwing localStorage does not break the app (test)",
         "No AudioContext is constructed before a user gesture"
       ],
-      "files": ["src/audio/sfx.ts", "src/audio/sfx.test.ts", "src/hooks/useSound.ts", "src/components/BrandBar.tsx"],
-      "reuse": ["original/showroom-shift-simulator.html section 1 (SoftSoundFX) and mute toggle"]
+      "files": [
+        "src/audio/sfx.ts",
+        "src/audio/sfx.test.ts",
+        "src/hooks/useSound.ts",
+        "src/components/BrandBar.tsx"
+      ],
+      "reuse": [
+        "original/showroom-shift-simulator.html section 1 (SoftSoundFX) and mute toggle"
+      ]
     },
     "e2e-a11y": {
       "priority": "P2",
       "status": "not_started",
       "type": "feature",
-      "depends_on": ["round-modal", "sound"],
+      "depends_on": [
+        "round-modal",
+        "sound"
+      ],
       "effort": "small",
-      "issue": null,
+      "issue": 7,
       "description": "Playwright end-to-end tests against the dev or preview server on port 3000 using page.clock to fast-forward game time: play Round 1 and Round 2 by keyboard only, reach the comparison report and replay. Run axe (@axe-core/playwright) on the briefing, mid-shift and report states at phone and desktop viewports. Regenerate docs/screenshots/ with the forger screenshot command and run check a11y. The e2e script is not part of gates (needs a browser); document how to run it in the README.",
       "acceptance_criteria": [
         "bun run e2e passes: both rounds completed by keyboard, comparison report shown, replay returns to Round 1",
@@ -133,8 +204,15 @@
         "docs/screenshots/ regenerated by the screenshot command",
         "README explains running e2e and a11y"
       ],
-      "files": ["e2e/", "playwright.config.ts", "README.md", "docs/screenshots/"],
-      "reuse": [".forger/opinions/ui.md (screenshot, check a11y)"]
+      "files": [
+        "e2e/",
+        "playwright.config.ts",
+        "README.md",
+        "docs/screenshots/"
+      ],
+      "reuse": [
+        ".forger/opinions/ui.md (screenshot, check a11y)"
+      ]
     }
   }
 }
