@@ -1,11 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
-const viewports = [
-  { name: 'phone', width: 390, height: 844 },
-  { name: 'desktop', width: 1280, height: 800 },
-] as const;
-
 const SHIFT_MS = 31_000;
 
 // Each fake-clock shift steps every animation frame, so a full run is slow on a loaded machine.
@@ -35,37 +30,48 @@ async function playShiftByKeyboard(page: Page): Promise<void> {
   await page.clock.runFor(SHIFT_MS);
 }
 
-for (const viewport of viewports) {
-  test.describe(viewport.name, () => {
-    test.use({ viewport: { width: viewport.width, height: viewport.height } });
+/** Both rounds by keyboard to the comparison report and back, with axe at each state. */
+async function playBothRounds(page: Page): Promise<void> {
+  await start(page);
+  const dialog = page.getByRole('dialog');
 
-    test('both rounds by keyboard, comparison report, replay', async ({ page }) => {
-      await start(page);
-      const dialog = page.getByRole('dialog');
+  await expect(dialog.getByRole('heading')).toHaveText(/ROUND 1: IN-STORE BOTTLENECK/);
+  await expect(dialog.getByRole('button')).toBeFocused();
+  await expectNoSeriousViolations(page, 'briefing');
+  await page.keyboard.press('Enter');
 
-      await expect(dialog.getByRole('heading')).toHaveText(/ROUND 1: IN-STORE BOTTLENECK/);
-      await expect(dialog.getByRole('button')).toBeFocused();
-      await expectNoSeriousViolations(page, 'briefing');
-      await page.keyboard.press('Enter');
+  await page.clock.runFor(5_000);
+  await page.keyboard.press('1');
+  await page.keyboard.press('Space');
+  await page.clock.runFor(3_000);
+  await expectNoSeriousViolations(page, 'mid-shift');
 
-      await page.clock.runFor(5_000);
-      await page.keyboard.press('1');
-      await page.keyboard.press('Space');
-      await page.clock.runFor(3_000);
-      await expectNoSeriousViolations(page, 'mid-shift');
+  await playShiftByKeyboard(page);
+  await expect(dialog.getByRole('heading')).toHaveText(/BOTTLENECK REPORT/);
+  await expectNoSeriousViolations(page, 'bottleneck report');
+  await page.keyboard.press('Enter');
 
-      await playShiftByKeyboard(page);
-      await expect(dialog.getByRole('heading')).toHaveText(/BOTTLENECK REPORT/);
-      await expectNoSeriousViolations(page, 'bottleneck report');
-      await page.keyboard.press('Enter');
+  await playShiftByKeyboard(page);
+  await expect(dialog.getByRole('heading')).toHaveText(/EXECUTIVE COMPARISON REPORT/);
+  await expectNoSeriousViolations(page, 'comparison report');
+  await page.keyboard.press('Enter');
 
-      await playShiftByKeyboard(page);
-      await expect(dialog.getByRole('heading')).toHaveText(/EXECUTIVE COMPARISON REPORT/);
-      await expectNoSeriousViolations(page, 'comparison report');
-      await page.keyboard.press('Enter');
-
-      await expect(dialog).toBeHidden();
-      await expect(page.getByText('ROUND 1: IN-STORE MIXING')).toBeVisible();
-    });
-  });
+  await expect(dialog).toBeHidden();
+  await expect(page.getByText('ROUND 1: IN-STORE MIXING')).toBeVisible();
 }
+
+test.describe('phone', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('both rounds by keyboard, comparison report, replay', async ({ page }) => {
+    await playBothRounds(page);
+  });
+});
+
+test.describe('desktop', () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test('both rounds by keyboard, comparison report, replay', async ({ page }) => {
+    await playBothRounds(page);
+  });
+});
