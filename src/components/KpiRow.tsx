@@ -1,6 +1,6 @@
 import type { Stats } from '../game';
 
-const GBP = '£';
+const GBP = '\u00A3';
 
 export function KpiRow({ stats }: { readonly stats: Stats }) {
   const cards = [
