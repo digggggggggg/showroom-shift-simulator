@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forger in Five</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono&display=swap">
+<style>
+*{box-sizing:border-box;margin:0}
+body{background:#2A2824;color:#F4EFE6;font-family:'Space Grotesk',Arial,sans-serif;padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:16px}
+h1{font-size:20px;font-weight:700}
+.frame{width:min(100%,1100px);aspect-ratio:16/9;overflow:hidden;border-radius:8px}
+.stage{width:1920px;height:1080px;transform-origin:0 0}
+.slide{position:relative;width:1920px;height:1080px}
+.notes{width:min(100%,1100px);font-size:15px;line-height:1.5;color:#C9C0B0;margin-bottom:32px}
+table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:16px 12px;border-bottom:2px solid currentColor;vertical-align:top}
+</style></head><body>
+<h1>Forger in Five</h1>
+<div class="frame"><div class="stage"><section class="slide" id="cover" data-transition="fade" style="background:#1B1A17;color:#F4EFE6;font-family:'Space Grotesk', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:48px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;color:#F08A4B;letter-spacing:3px">FORGER</p>
+<h1 style="font-size:132px;font-weight:700;line-height:1.02">Tools decide.<br>Models judge.<br>Software ships.</h1>
+<p style="font-size:40px;line-height:1.35;color:#C9C0B0">An unattended development loop that lets any model forge ahead reliably</p>
+</section></div></div>
+<p class="notes">Forger is a work loop for building software with AI agents unattended. Its one big idea: anything that must come out the same every time is a tested command the model cannot talk its way around. The model only reasons where judgement is needed, between hard boundaries the tools enforce. I'll show the goals in one slide, then use a real project, the Shift Simulator, as proof.</p>
+<div class="frame"><div class="stage"><section class="slide" id="goals" data-transition="fade" style="background:#F4EFE6;color:#1B1A17;font-family:'Space Grotesk', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#A8481A;letter-spacing:3px">THE GOALS</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBF8F2;padding:40px;border-top:8px solid #A8481A;border-radius:12px"><h3 style="font-size:44px;font-weight:700">Determinism first</h3><p style="font-size:30px;line-height:1.4;color:#4A443A">Picking work, gating, merging and measuring are tested commands. Any model, any harness.</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBF8F2;padding:40px;border-top:8px solid #A8481A;border-radius:12px"><h3 style="font-size:44px;font-weight:700">Verify, never trust</h3><p style="font-size:30px;line-height:1.4;color:#4A443A">One ticket, one worker, one PR. Done means merged with green checks, not "I finished".</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBF8F2;padding:40px;border-top:8px solid #A8481A;border-radius:12px"><h3 style="font-size:44px;font-weight:700">The owner decides</h3><p style="font-size:30px;line-height:1.4;color:#4A443A">Agents recommend. Halts, deploys and anything outside the repo wait for a person.</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBF8F2;padding:40px;border-top:8px solid #A8481A;border-radius:12px"><h3 style="font-size:44px;font-weight:700">It learns</h3><p style="font-size:30px;line-height:1.4;color:#4A443A">Every correction climbs from a note to a rule, a check and finally a tool.</p></div>
+</div>
+</section></div></div>
+<p class="notes">Four goals, all from forger's principles. One: determinism first. Selecting the next ticket, running the gates, deciding whether a ticket merged, measuring the process: those are commands with JSON output, so the model and the harness are interchangeable. Two: verify, never trust. A worker's claim is not evidence; a merged PR with passing checks is. Three: the owner decides, everyone else recommends, through an explicit approval table. Four: the process refines itself, so a lesson learned once holds without anyone having to remember it.</p>
+<div class="frame"><div class="stage"><section class="slide" id="proof" data-transition="fade" style="background:#1B1A17;color:#F4EFE6;font-family:'Space Grotesk', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#F08A4B;letter-spacing:3px">THE PROOF: SHIFT SIMULATOR</p>
+<h2 style="font-size:72px;font-weight:700;line-height:1.1">One HTML demo to a tested React app in production, overnight</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:40px">
+<div style="display:flex;flex-direction:column;gap:8px"><p style="font-size:120px;font-weight:700;color:#F08A4B;line-height:1">7</p><p style="font-size:30px;color:#C9C0B0">tickets, all merged</p></div>
+<div style="display:flex;flex-direction:column;gap:8px"><p style="font-size:120px;font-weight:700;color:#F08A4B;line-height:1">110</p><p style="font-size:30px;color:#C9C0B0">tests green in CI</p></div>
+<div style="display:flex;flex-direction:column;gap:8px"><p style="font-size:120px;font-weight:700;color:#F08A4B;line-height:1">~$3</p><p style="font-size:30px;color:#C9C0B0">agent cost per merged PR</p></div>
+<div style="display:flex;flex-direction:column;gap:8px"><p style="font-size:120px;font-weight:700;color:#F08A4B;line-height:1">0</p><p style="font-size:30px;color:#C9C0B0">lines written by the owner</p></div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#C9C0B0">107 unit + 3 Playwright tests (CI, PR #14). Cost from the loop's own report. Live: showroom-shift-simulator.vercel.app</p>
+</section></div></div>
+<p class="notes">The Shift Simulator started as a single self-contained HTML game. Forger planned it into seven vertical slices after two short rounds of questions, then fresh agent sessions built each one: pure seeded game logic, the canvas, the controls, the modals, sound, and keyboard plus accessibility tests. The owner's job was decisions, not code: approving the plan, unblocking halts, asking for CI, approving the deploy. Four tickets landed back to back in about nineteen minutes once the plumbing was right.</p>
+<div class="frame"><div class="stage"><section class="slide" id="halts" data-transition="fade" style="background:#F4EFE6;color:#1B1A17;font-family:'Space Grotesk', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#A8481A;letter-spacing:3px">THE GUARD RAILS HELD</p>
+<h2 style="font-size:72px;font-weight:700;line-height:1.1">Three halts. Zero unverified merges by the loop.</h2>
+<table style="font-size:30px;color:#1B1A17">
+<tr><th style="width:36%">What went wrong</th><th style="width:34%">What the loop did</th><th style="width:30%">Outcome</th></tr>
+<tr><td>Wrong GitHub identity</td><td>Halted: completed, not merged</td><td>Scoped token</td></tr>
+<tr><td>Verifier missed branch names</td><td>Refused to merge blind</td><td>Moved to GitHub Issues</td></tr>
+<tr><td>Browser tests unprovable</td><td>Handed over to the owner</td><td>CI added, PR merged</td></tr>
+</table>
+</section></div></div>
+<p class="notes">This is the slide that matters. Each time something broke, forger stopped rather than march past work it could not verify. A ticket marked done with nothing merged halted the loop. A PR with no verdict was not merged. A criterion the verifier could not prove went to a human instead of being waved through. None of those halts were model failures; they were plumbing and tooling gaps, and the tools caught all three.</p>
+<div class="frame"><div class="stage"><section class="slide" id="ladder" data-transition="fade" style="background:#F08A4B;color:#1B1A17;font-family:'Space Grotesk', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:48px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#1B1A17;letter-spacing:3px">WHAT COMES NEXT</p>
+<h2 style="font-size:96px;font-weight:700;line-height:1.08">Every halt becomes a check, so the next project never hits it.</h2>
+<p style="font-size:40px;line-height:1.4">Local-branch verify, browser-test evidence, CI in the scaffold, a plumbing dry run: four lessons climbing the ladder now.</p>
+</section></div></div>
+<p class="notes">Close on the self-improving loop. The three snags from this project are already lessons with a clear destination: the verifier should resolve local-tracker branch names and accept CI browser-test results as evidence; the scaffold should ship CI on day one; and setup should prove the remote, identity and tracker with one dry-run ticket. Once those are tools, the next project of this kind runs end to end without a single halt.</p>
+<script>const fit=()=>document.querySelectorAll(".frame").forEach(f=>f.firstElementChild.style.transform="scale("+f.clientWidth/1920+")");addEventListener("resize",fit);fit();</script>
+</body></html>

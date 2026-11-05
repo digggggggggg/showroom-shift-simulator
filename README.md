@@ -2,7 +2,7 @@
 
 A small pixel-art browser game about a paint showroom's till. One clerk serves a queue of trade and retail customers; in Round 1 every order is mixed in store, in Round 2 large orders go to the London Hub. The shift ends with a report comparing the two models.
 
-This repo ports `original/showroom-shift-simulator.html` (the reference implementation and approved design) to React + TypeScript. `original/` is reference only; it is not built or served. The plan is in `docs/plan-react-port.md`, decisions in `docs/adr/`, vocabulary in `GLOSSARY.md`.
+This repo ports `original/showroom-shift-simulator.html` (the reference implementation and approved design) to React + TypeScript. `original/` is reference only and never edited; the build copies it unchanged to `/showroom-shift-simulator.html`, also reachable at `/original`. The plan is in `docs/plan-react-port.md`, decisions in `docs/adr/`, vocabulary in `GLOSSARY.md`.
 
 ## Run
 
@@ -54,3 +54,15 @@ bun "$FORGER_PLUGIN/bin/work.ts" check a11y   # axe on every route and viewport
 `src/game/render.ts` draws a frame as a function of `(ctx, state, view)`, and `src/game/loop.ts` is the fixed-timestep accumulator (frame gaps capped, no advance while the tab is hidden). The browser wiring lives outside the pure module: `src/hooks/useGameLoop.ts` runs `requestAnimationFrame`, `src/hooks/useGameState.ts` reads the store (`src/game/store.ts`) through `useSyncExternalStore`, and `src/components/GameCanvas.tsx` owns the canvas.
 
 CSS colours live in `src/styles/tokens.css` and canvas colours in `src/game/palette.ts`. No other file under `src/` holds a raw colour literal.
+
+## Presentations
+
+- [Shift Simulator presenter deck](docs/presentations/presenter.html): talking points to run alongside the game, with speaker notes.
+- [Productionising the Shift Simulator](docs/presentations/productionising.html): how the single-file original became this tested React app.
+- [Forger in Five](docs/presentations/forger-in-five.html): what forger is for, with this project as the worked example.
+
+Each is a self-contained page; open it in a browser.
+
+---
+
+Created by Steph, built by [Forger](https://github.com/diegoaltoworks/forger).

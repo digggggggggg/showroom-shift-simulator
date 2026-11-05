@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shift Simulator Presenter Deck</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono&display=swap">
+<style>
+*{box-sizing:border-box;margin:0}
+body{background:#2A2824;color:#F4EFE6;font-family:'Space Grotesk',Arial,sans-serif;padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:16px}
+h1{font-size:20px;font-weight:700}
+.frame{width:min(100%,1100px);aspect-ratio:16/9;overflow:hidden;border-radius:8px}
+.stage{width:1920px;height:1080px;transform-origin:0 0}
+.slide{position:relative;width:1920px;height:1080px}
+.notes{width:min(100%,1100px);font-size:15px;line-height:1.5;color:#C9C0B0;margin-bottom:32px}
+table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:16px 12px;border-bottom:2px solid currentColor;vertical-align:top}
+</style></head><body>
+<h1>Shift Simulator Presenter Deck</h1>
+<div class="frame"><div class="stage"><section class="slide" id="cover" data-transition="fade" style="background:#2A0B4D;color:#FBFBF4;font-family:'Nunito Sans', Verdana, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:48px">
+<p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:28px;color:#FFD166;line-height:1.6">LONDON PAINT SHOWROOM</p>
+<h1 style="font-family:'Rubik', Verdana, sans-serif;font-size:120px;font-weight:700;line-height:1.05">One associate.<br>One till. One shaker.</h1>
+<p style="font-size:44px;color:#E6CDFF;line-height:1.3">A two-round shift simulator, and the case for routing large mixes to a 2-hour London hub</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#E6CDFF">Play at showroom-shift-simulator.vercel.app</p>
+</section></div></div>
+<p class="notes">Presenter deck. Use these slides around the live game, not instead of it. The flow is: set the scene, play Round 1, debrief the bottleneck, play Round 2 with the hub, then compare the two rounds and open the discussion. Allow about 15 to 20 minutes including discussion; each round of play lasts 30 seconds.</p>
+<div class="frame"><div class="stage"><section class="slide" id="runsheet" data-transition="fade" style="background:#FBFBF4;color:#2A0B4D;font-family:'Nunito Sans', Verdana, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:24px;color:#6B2FA8;line-height:1.6">RUN SHEET</p>
+<h2 style="font-family:'Rubik', Verdana, sans-serif;font-size:72px;font-weight:700;line-height:1.1">How to run the session</h2>
+<table style="font-size:30px;color:#2A0B4D">
+<tr><th style="width:22%">Step</th><th style="width:58%">What happens</th><th style="width:20%">Time</th></tr>
+<tr><td>Set the scene</td><td>The shop, the customers, the rules</td><td>3 min</td></tr>
+<tr><td>Round 1</td><td>A volunteer plays; the room watches the till</td><td>30 s</td></tr>
+<tr><td>Debrief 1</td><td>Read the Bottleneck Report together</td><td>4 min</td></tr>
+<tr><td>Round 2</td><td>Same player, hub dispatch now available</td><td>30 s</td></tr>
+<tr><td>Compare</td><td>Read the Executive Comparison Report</td><td>3 min</td></tr>
+<tr><td>Discuss</td><td>What it means for our showrooms</td><td>5+ min</td></tr>
+</table>
+<p style="font-size:28px;color:#5A4A6E">Controls: key 1 serves advice or a sample pot. Key 2 or Space mixes or dispatches. Buttons work by touch too.</p>
+</section></div></div>
+<p class="notes">Before the session: open the game full screen on the shared display and turn sound on; the effects are soft and boardroom safe, and the walkout sound is a useful cue for the room. Pick a volunteer who has not seen the game. Let the same person play both rounds so the comparison is fair. Customers arrive at random, so every run differs; that is fine, the pattern repeats.</p>
+<div class="frame"><div class="stage"><section class="slide" id="scene" data-transition="fade" style="background:#FBFBF4;color:#2A0B4D;font-family:'Nunito Sans', Verdana, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:24px;color:#6B2FA8;line-height:1.6">THE SHOP</p>
+<h2 style="font-family:'Rubik', Verdana, sans-serif;font-size:72px;font-weight:700;line-height:1.1">What the room is looking at</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:28px">
+<div style="display:flex;flex-direction:column;gap:8px;background:#F1E4FF;padding:32px;border-radius:16px"><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:36px;font-weight:700">The till</h3><p style="font-size:28px;color:#4A3A5E">Green counter on the right. The associate serves from here.</p></div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#F1E4FF;padding:32px;border-radius:16px"><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:36px;font-weight:700">The shaker</h3><p style="font-size:28px;color:#4A3A5E">Top left. Mixing paint means walking away from the till.</p></div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#F1E4FF;padding:32px;border-radius:16px"><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:36px;font-weight:700">The queue</h3><p style="font-size:28px;color:#4A3A5E">Each customer has a speech bubble and a patience bar overhead.</p></div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#F1E4FF;padding:32px;border-radius:16px"><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:36px;font-weight:700">The scoreboard</h3><p style="font-size:28px;color:#4A3A5E">Captured, Walkouts, Unmanned seconds and Hub orders, live.</p></div>
+</div>
+</section></div></div>
+<p class="notes">Walk the room around the screen before anyone plays. The associate stands behind the green counter. The shaker and tinting station are at the back, top left. Customers queue along the floor; the one at the front shows what they want, for example 10 TINS or ADVICE, and everyone has a patience bar that goes from green to amber to red. When the associate leaves the counter a red COUNTER UNMANNED banner appears. Point at the four scores under the buttons: those are what the reports will summarise.</p>
+<div class="frame"><div class="stage"><section class="slide" id="customers" data-transition="fade" style="background:#FBFBF4;color:#2A0B4D;font-family:'Nunito Sans', Verdana, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:24px;color:#6B2FA8;line-height:1.6">THE CUSTOMERS</p>
+<h2 style="font-family:'Rubik', Verdana, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Four kinds of customer walk in</h2>
+<table style="font-size:30px;color:#2A0B4D">
+<tr><th style="width:30%">Customer</th><th style="width:22%">Share</th><th style="width:22%">Order</th><th style="width:26%">Value</th></tr>
+<tr><td>Trade, large mix</td><td>about 35%</td><td>6 to 10 tins</td><td>£70 per tin</td></tr>
+<tr><td>Small mix</td><td>about 25%</td><td>2 to 5 tins</td><td>£60 per tin</td></tr>
+<tr><td>Colour consultation</td><td>about 22%</td><td>advice</td><td>£45</td></tr>
+<tr><td>Sample pot</td><td>about 18%</td><td>1 pot</td><td>£55</td></tr>
+</table>
+<p style="font-size:30px;color:#4A3A5E">Every shift opens with the same customer at the till: a trade order for 10 tins, worth £700.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5A4A6E">Values are the simulator's settings, chosen to illustrate the trade-off</p>
+</section></div></div>
+<p class="notes">Each arriving customer is drawn at random with these odds. Large trade mixes are the big tickets, between £420 and £700. Small mixes are £120 to £300. Consultations and sample pots are small tickets, but they are quick, they need only the till, and in the story they are the start of a relationship. Make sure the room knows the first customer is always a 10-tin trade order: that is the dilemma the game is built around.</p>
+<div class="frame"><div class="stage"><section class="slide" id="rules" data-transition="fade" style="background:#2A0B4D;color:#FBFBF4;font-family:'Nunito Sans', Verdana, sans-serif;padding:128px;display:flex;flex-direction:column;gap:64px">
+<p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:24px;color:#FFD166;line-height:1.6">THE RULES OF THE SHOP</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:64px 64px">
+<div style="display:flex;flex-direction:column;gap:12px"><p style="font-family:'Rubik', Verdana, sans-serif;font-size:120px;font-weight:700;color:#FFD166;line-height:1">1 s</p><p style="font-size:36px;color:#E6CDFF">of shaking per tin, in store, plus the walk to and from the shaker</p></div>
+<div style="display:flex;flex-direction:column;gap:12px"><p style="font-family:'Rubik', Verdana, sans-serif;font-size:120px;font-weight:700;color:#FFD166;line-height:1">11 s</p><p style="font-size:36px;color:#E6CDFF">of patience per customer while someone is at the till</p></div>
+<div style="display:flex;flex-direction:column;gap:12px"><p style="font-family:'Rubik', Verdana, sans-serif;font-size:120px;font-weight:700;color:#FFD166;line-height:1">1.8x</p><p style="font-size:36px;color:#E6CDFF">faster patience drain when the counter is unmanned</p></div>
+<div style="display:flex;flex-direction:column;gap:12px"><p style="font-family:'Rubik', Verdana, sans-serif;font-size:120px;font-weight:700;color:#FFD166;line-height:1">2.25 s</p><p style="font-size:36px;color:#E6CDFF">between new arrivals, up to five in the queue</p></div>
+</div>
+</section></div></div>
+<p class="notes">These four numbers drive everything. Mixing a 10-tin order keeps the associate away for ten seconds of shaking plus the walk. While the counter is empty, every waiting customer loses patience 1.8 times as fast, so 11 seconds of patience shrinks to about 6. Meanwhile a new customer arrives roughly every two and a quarter seconds. You do not need to do the arithmetic for the room; the point is that a long mix and a short fuse cannot coexist.</p>
+<div class="frame"><div class="stage"><section class="slide" id="r1brief" data-transition="fade" style="background:#FBFBF4;color:#2A0B4D;font-family:'Nunito Sans', Verdana, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:24px;color:#6B2FA8;line-height:1.6">ROUND 1 - IN-STORE MIXING</p>
+<h2 style="font-family:'Rubik', Verdana, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Every tin is mixed on site</h2>
+<div style="display:flex;flex-direction:column;gap:24px;background:#F1E4FF;padding:48px;border-radius:16px">
+<h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:40px;font-weight:700">Say before pressing start</h3>
+<ul style="font-size:34px;line-height:1.55;color:#4A3A5E"><li>"This is how the showroom works today."</li><li>"Your first customer wants 10 tins. Do you mix it?"</li><li>"Watch the patience bars while the associate is at the back."</li></ul>
+</div>
+<p style="font-size:30px;color:#5A4A6E">The briefing card in the game says the same: mixing is on site at 1 second per tin, and an unmanned counter strands waiting clients.</p>
+</section></div></div>
+<p class="notes">Ask the volunteer, out loud, whether they will take the 10-tin order. Almost everyone does: it is £700 and it is right in front of them. That choice is the point. Do not coach the player during the round; let the room see what happens naturally. Press START ROUND 1 when ready.</p>
+<div class="frame"><div class="stage"><section class="slide" id="r1watch" data-transition="fade" style="background:#FBFBF4;color:#2A0B4D;font-family:'Nunito Sans', Verdana, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:24px;color:#6B2FA8;line-height:1.6">ROUND 1 - WHAT TO POINT AT</p>
+<h2 style="font-family:'Rubik', Verdana, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Thirty seconds, three moments to call out</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#F1E4FF;padding:36px;border-radius:16px"><p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:28px;color:#6B2FA8">1</p><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:36px;font-weight:700">The banner</h3><p style="font-size:28px;line-height:1.45;color:#4A3A5E">COUNTER UNMANNED appears and the till buttons lock.</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#F1E4FF;padding:36px;border-radius:16px"><p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:28px;color:#6B2FA8">2</p><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:36px;font-weight:700">The bars</h3><p style="font-size:28px;line-height:1.45;color:#4A3A5E">Patience goes amber, then red. Bubbles say WAIT...</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#F1E4FF;padding:36px;border-radius:16px"><p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:28px;color:#6B2FA8">3</p><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:36px;font-weight:700">The walkout</h3><p style="font-size:28px;line-height:1.45;color:#4A3A5E">An angry customer leaves and the lost amount floats up.</p></div>
+</div>
+</section></div></div>
+<p class="notes">Narrate lightly while the round plays. When the associate walks to the shaker, point at the red banner and the locked buttons. As the queue grows, point at the bars changing colour. When the first walkout happens there is a falling coins sound and a red minus figure; let the room react. Notice who walks out: often the quick advice and sample-pot customers, who needed only a moment at the till.</p>
+<div class="frame"><div class="stage"><section class="slide" id="r1debrief" data-transition="fade" style="background:#FBFBF4;color:#2A0B4D;font-family:'Nunito Sans', Verdana, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:24px;color:#6B2FA8;line-height:1.6">ROUND 1 - DEBRIEF</p>
+<h2 style="font-family:'Rubik', Verdana, sans-serif;font-size:72px;font-weight:700;line-height:1.1">The bottleneck is the associate's time, not demand</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:16px;background:#F1E4FF;padding:40px;border-radius:16px"><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:36px;font-weight:700">Read from the report</h3><ul style="font-size:30px;line-height:1.5;color:#4A3A5E"><li>Revenue captured</li><li>Lost to walkouts, and how many</li><li>Seconds the counter was unmanned, out of 30</li></ul></div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#F1E4FF;padding:40px;border-radius:16px"><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:36px;font-weight:700">Ask the room</h3><ul style="font-size:30px;line-height:1.5;color:#4A3A5E"><li>Who walked out, and what did they want?</li><li>Was saying yes to 10 tins wrong?</li><li>Where does this happen in our stores?</li></ul></div>
+</div>
+</section></div></div>
+<p class="notes">The Bottleneck Report shows four lines: revenue captured, lost to walkouts, the number of walkouts, and how long the counter was unmanned out of 30 seconds. Read them out. Then make the central point: there were customers and there was money on the floor, but one person cannot be at the shaker and the till at once. Saying yes to the trade order was not a mistake; the model forces an impossible choice. Draw out examples from the room before moving on.</p>
+<div class="frame"><div class="stage"><section class="slide" id="r2brief" data-transition="fade" style="background:#2A0B4D;color:#FBFBF4;font-family:'Nunito Sans', Verdana, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
+<p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:24px;color:#FFD166;line-height:1.6">ROUND 2 - THE 2-HOUR LONDON HUB</p>
+<h2 style="font-family:'Rubik', Verdana, sans-serif;font-size:72px;font-weight:700;line-height:1.1">One rule changes: big mixes go to the hub</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;border:3px solid #4CC9F0;padding:40px;border-radius:16px"><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:40px;font-weight:700;color:#4CC9F0">More than 5 tins</h3><p style="font-size:32px;line-height:1.45;color:#E6CDFF">Dispatched to the hub in one press. The associate stays at the till.</p></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;border:3px solid #E6CDFF;padding:40px;border-radius:16px"><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:40px;font-weight:700">5 tins or fewer</h3><p style="font-size:32px;line-height:1.45;color:#E6CDFF">Still mixed on site, 1 second per tin, exactly as before.</p></div>
+</div>
+<p style="font-size:32px;color:#E6CDFF">Same player, same customers, same opening 10-tin order.</p>
+</section></div></div>
+<p class="notes">Introduce Round 2 as the only change to the shop. Orders of more than five tins can now be dispatched to the 2-hour London Hub. The mix button turns blue and reads DISPATCH N TINS TO HUB. Small orders still need the shaker, so the associate will still step away sometimes; that keeps the comparison honest. Everything else, the arrival rate, the patience and the values, stays the same.</p>
+<div class="frame"><div class="stage"><section class="slide" id="r2watch" data-transition="fade" style="background:#FBFBF4;color:#2A0B4D;font-family:'Nunito Sans', Verdana, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:24px;color:#6B2FA8;line-height:1.6">ROUND 2 - WHAT TO POINT AT</p>
+<h2 style="font-family:'Rubik', Verdana, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Watch the counter stay staffed</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#F1E4FF;padding:36px;border-radius:16px"><p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:28px;color:#6B2FA8">1</p><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:36px;font-weight:700">Blue button</h3><p style="font-size:28px;line-height:1.45;color:#4A3A5E">The 10-tin order is dispatched; HUB SENT floats up.</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#F1E4FF;padding:36px;border-radius:16px"><p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:28px;color:#6B2FA8">2</p><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:36px;font-weight:700">Short trips</h3><p style="font-size:28px;line-height:1.45;color:#4A3A5E">Only small mixes take the associate to the shaker now.</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#F1E4FF;padding:36px;border-radius:16px"><p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:28px;color:#6B2FA8">3</p><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:36px;font-weight:700">Quick wins</h3><p style="font-size:28px;line-height:1.45;color:#4A3A5E">Advice and sample pots get served before patience runs out.</p></div>
+</div>
+</section></div></div>
+<p class="notes">The opening moment is the contrast: the same £700 order that emptied the counter in Round 1 is now one press and a whoosh sound, and the associate never moves. Point at the Hub Orders score ticking up and the Unmanned seconds staying low. The quick advice and sample-pot customers, who walked out in Round 1, are now served with a register chime.</p>
+<div class="frame"><div class="stage"><section class="slide" id="compare" data-transition="fade" style="background:#FBFBF4;color:#2A0B4D;font-family:'Nunito Sans', Verdana, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:24px;color:#6B2FA8;line-height:1.6">THE COMPARISON REPORT</p>
+<h2 style="font-family:'Rubik', Verdana, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Same shop, same customers, one rule changed</h2>
+<table style="font-size:32px;color:#2A0B4D">
+<tr><th style="width:34%">Example run</th><th style="width:33%">Round 1, in store</th><th style="width:33%">Round 2, with hub</th></tr>
+<tr><td>Sales captured</td><td>£1,710</td><td>£4,365, higher</td></tr>
+<tr><td>Lost to walkouts</td><td>£1,380</td><td>£0, none lost</td></tr>
+<tr><td>Walkouts</td><td>5</td><td>0</td></tr>
+<tr><td>Hub orders</td><td>-</td><td>7</td></tr>
+</table>
+<p style="font-size:30px;color:#4A3A5E">Read your own room's numbers from the game's report; this table is one scripted test run, shown only as an example.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5A4A6E">Example from the simulator's automated two-round test player; live results vary with random arrivals</p>
+</section></div></div>
+<p class="notes">At the end of Round 2 the game shows the Executive Comparison Report: R1 against R2 for sales, lost revenue and walkouts. Read your room's actual figures from the screen. The table on this slide is a run from the simulator's automated test player, there so you know the typical shape: sales up, walkouts down to zero or close to it. Do not present these example numbers as forecasts; they come from a simplified model.</p>
+<div class="frame"><div class="stage"><section class="slide" id="takeaway" data-transition="fade" style="background:#FFD166;color:#2A0B4D;font-family:'Nunito Sans', Verdana, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:48px">
+<p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:24px;color:#2A0B4D;line-height:1.6">KEY TAKEAWAY</p>
+<h2 style="font-family:'Rubik', Verdana, sans-serif;font-size:96px;font-weight:700;line-height:1.1">Route large mixes off site, and the associate stays where the customers are.</h2>
+<p style="font-size:40px;line-height:1.4">The counter stays staffed, quick consultations get served, and walkouts stop.</p>
+</section></div></div>
+<p class="notes">This is the one sentence to leave the room with. The hub does not make the associate faster; it takes the slowest job out of the store. That frees the scarcest resource, time at the counter, for the customers who need a person: colour advice, sample pots, the small orders that start a project. If you only have time for one slide after the game, use this one.</p>
+<div class="frame"><div class="stage"><section class="slide" id="caveats" data-transition="fade" style="background:#FBFBF4;color:#2A0B4D;font-family:'Nunito Sans', Verdana, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:24px;color:#6B2FA8;line-height:1.6">HONEST FRAMING</p>
+<h2 style="font-family:'Rubik', Verdana, sans-serif;font-size:72px;font-weight:700;line-height:1.1">What the model leaves out</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:28px">
+<div style="display:flex;flex-direction:column;gap:8px;background:#F1E4FF;padding:32px;border-radius:16px"><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:34px;font-weight:700">Hub costs</h3><p style="font-size:28px;color:#4A3A5E">Delivery, van capacity and hub staffing are not in the game.</p></div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#F1E4FF;padding:32px;border-radius:16px"><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:34px;font-weight:700">The 2-hour promise</h3><p style="font-size:28px;color:#4A3A5E">The game assumes trade customers accept delivery instead of waiting.</p></div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#F1E4FF;padding:32px;border-radius:16px"><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:34px;font-weight:700">One associate</h3><p style="font-size:28px;color:#4A3A5E">Real stores may have a second person or a dedicated mixing bay.</p></div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#F1E4FF;padding:32px;border-radius:16px"><h3 style="font-family:'Rubik', Verdana, sans-serif;font-size:34px;font-weight:700">Illustrative numbers</h3><p style="font-size:28px;color:#4A3A5E">Prices, patience and arrival rates are settings, not measurements.</p></div>
+</div>
+</section></div></div>
+<p class="notes">Say this before someone in the room does. The simulator is built to make one trade-off visible, not to forecast revenue. It leaves out what the hub costs to run, whether trade customers really accept a 2-hour delivery instead of taking tins away, and stores with more than one person on shift. The figures are tuning settings chosen to illustrate the point. The next step after the game is real data: mix times, queue lengths and walkout rates from our own showrooms.</p>
+<div class="frame"><div class="stage"><section class="slide" id="discuss" data-transition="fade" style="background:#2A0B4D;color:#FBFBF4;font-family:'Nunito Sans', Verdana, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
+<p style="font-family:'Press Start 2P', 'Courier New', monospace;font-size:24px;color:#FFD166;line-height:1.6">DISCUSSION</p>
+<h2 style="font-family:'Rubik', Verdana, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Questions to take back to the business</h2>
+<ol style="font-size:40px;line-height:1.6;color:#E6CDFF"><li>Where is the 5-tin threshold right for us?</li><li>What would we measure first: mix time, queue length or walkouts?</li><li>Which showrooms feel this bottleneck most?</li><li>What would a trade customer need to trust a 2-hour delivery?</li></ol>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#E6CDFF">Replay any time at showroom-shift-simulator.vercel.app</p>
+</section></div></div>
+<p class="notes">Close by turning the game into decisions. The threshold of more than five tins is a setting in the simulator, not a recommendation; ask where it should sit in practice. Ask what data would confirm or kill the idea. Ask which stores to pilot in. And ask what the trade customer would need to hear to accept delivery instead of waiting. The game has a REPLAY SIMULATION button if the room wants another go.</p>
+<script>const fit=()=>document.querySelectorAll(".frame").forEach(f=>f.firstElementChild.style.transform="scale("+f.clientWidth/1920+")");addEventListener("resize",fit);fit();</script>
+</body></html>
