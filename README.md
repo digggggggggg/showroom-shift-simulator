@@ -21,6 +21,8 @@ bun run gates      # lint, typecheck, unit tests, production build
 
 Individual steps: `bun run lint`, `bun run typecheck`, `bun run test`, `bun run build`.
 
+CI (`.github/workflows/ci.yml`) runs `bun run gates` and the Playwright e2e suite on every pull request and on pushes to `main`.
+
 ## End-to-end tests
 
 ```sh
