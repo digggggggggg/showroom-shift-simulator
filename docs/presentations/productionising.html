@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Productionising the Shift Simulator</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono&display=swap">
+<style>
+*{box-sizing:border-box;margin:0}
+body{background:#2A2824;color:#F4EFE6;font-family:'Space Grotesk',Arial,sans-serif;padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:16px}
+h1{font-size:20px;font-weight:700}
+.frame{width:min(100%,1100px);aspect-ratio:16/9;overflow:hidden;border-radius:8px}
+.stage{width:1920px;height:1080px;transform-origin:0 0}
+.slide{position:relative;width:1920px;height:1080px}
+.notes{width:min(100%,1100px);font-size:15px;line-height:1.5;color:#C9C0B0;margin-bottom:32px}
+table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:16px 12px;border-bottom:2px solid currentColor;vertical-align:top}
+</style></head><body>
+<h1>Productionising the Shift Simulator</h1>
+<div class="frame"><div class="stage"><section class="slide" id="cover" data-transition="fade" style="background:#14213D;color:#F5F3EE;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:40px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;color:#F2A541;letter-spacing:2px">ORIGINAL/SHOWROOM-SHIFT-SIMULATOR.HTML -&gt; PRODUCTION</p>
+<h1 style="font-size:120px;font-weight:700;line-height:1.05;color:#F5F3EE">From one HTML file<br>to a production app</h1>
+<p style="font-size:44px;color:#BFC8D6;line-height:1.3">How the London Paint Showroom Shift Simulator was ported to a tested React app by an unattended work loop</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#BFC8D6">showroom-shift-simulator.vercel.app</p>
+</section></div></div>
+<p class="notes">This is the story of taking a single self-contained HTML game and turning it into a tested, continuously integrated React app running in production. Most of the code was written by an unattended work loop: headless agent sessions that each implemented one ticket. The interesting parts are the planning, the guard rails, and the three places where the loop got stuck.</p>
+<div class="frame"><div class="stage"><section class="slide" id="start" data-transition="fade" style="background:#F5F3EE;color:#14213D;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#8A5A12;letter-spacing:2px">THE STARTING POINT</p>
+<h2 style="font-size:72px;font-weight:700;line-height:1.1">One self-contained HTML file that worked as a demo</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:2px solid #D9D4C7;border-radius:16px">
+<h3 style="font-size:44px;font-weight:600">What it had</h3>
+<ul style="font-size:32px;line-height:1.5;color:#4A5568"><li>Pixel-art canvas game, two rounds</li><li>WebAudio sound effects and mute</li><li>Keyboard and touch controls</li><li>A clear business story</li></ul>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:2px solid #D9D4C7;border-radius:16px">
+<h3 style="font-size:44px;font-weight:600">What it lacked</h3>
+<ul style="font-size:32px;line-height:1.5;color:#4A5568"><li>Any tests, or a way to write them</li><li>Speed tied to screen refresh rate</li><li>Mixer hum that could keep playing</li><li>Zoom disabled; no focus handling</li></ul>
+</div>
+</div>
+</section></div></div>
+<p class="notes">The original was a single HTML file: CSS, markup and one script that mixed game rules, canvas drawing, audio and DOM updates. It worked well as a demo. But nothing could be tested without a browser, and the game advanced one step per animation frame, assuming 60 frames a second. On a 120 Hz screen the 30-second shift ran twice as fast. There were smaller defects too: the shaker hum could keep playing after a round ended or after muting, and the page blocked pinch zoom.</p>
+<div class="frame"><div class="stage"><section class="slide" id="goal" data-transition="fade" style="background:#14213D;color:#F5F3EE;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:48px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#F2A541;letter-spacing:2px">THE GOAL</p>
+<h2 style="font-size:88px;font-weight:700;line-height:1.1">Same game, same numbers, same look.<br>Built so it can be trusted.</h2>
+<p style="font-size:40px;line-height:1.4;color:#BFC8D6">A faithful port, not a redesign. The only behaviour change allowed: real-time timing, so a shift lasts 30 seconds on every screen.</p>
+</section></div></div>
+<p class="notes">We scoped the work deliberately narrow. No new gameplay, no rebalancing, no dark theme, no new visual style. Every tuning number, every line of copy and every pixel colour stays as the original had it, and the original file is kept in the repo as the approved design. That made acceptance easy to judge: does the port match the original, and is it now testable, accessible and independent of refresh rate.</p>
+<div class="frame"><div class="stage"><section class="slide" id="loop" data-transition="fade" style="background:#F5F3EE;color:#14213D;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:64px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#8A5A12;letter-spacing:2px">HOW THE WORK RAN</p>
+<h2 style="font-size:72px;font-weight:700;line-height:1.1">An unattended loop: one ticket per agent session</h2>
+<div style="display:flex;align-items:center;gap:16px">
+<div style="flex:1;background:#14213D;color:#F5F3EE;padding:32px;border-radius:16px"><h3 style="font-size:36px;font-weight:600">Plan</h3><p style="font-size:26px;color:#BFC8D6">Grill, decide, write tickets</p></div>
+<x-icon name="PaperPlane" style="color:#8A5A12;width:48px;height:48px"></x-icon>
+<div style="flex:1;background:#14213D;color:#F5F3EE;padding:32px;border-radius:16px"><h3 style="font-size:36px;font-weight:600">Worker</h3><p style="font-size:26px;color:#BFC8D6">Fresh session builds one ticket</p></div>
+<x-icon name="PaperPlane" style="color:#8A5A12;width:48px;height:48px"></x-icon>
+<div style="flex:1;background:#14213D;color:#F5F3EE;padding:32px;border-radius:16px"><h3 style="font-size:36px;font-weight:600">Gates</h3><p style="font-size:26px;color:#BFC8D6">Lint, types, tests, build</p></div>
+<x-icon name="PaperPlane" style="color:#8A5A12;width:48px;height:48px"></x-icon>
+<div style="flex:1;background:#14213D;color:#F5F3EE;padding:32px;border-radius:16px"><h3 style="font-size:36px;font-weight:600">Verify</h3><p style="font-size:26px;color:#BFC8D6">Check each criterion</p></div>
+<x-icon name="PaperPlane" style="color:#8A5A12;width:48px;height:48px"></x-icon>
+<div style="flex:1;background:#F2A541;color:#14213D;padding:32px;border-radius:16px"><h3 style="font-size:36px;font-weight:600">Merge</h3><p style="font-size:26px">Squash, next ticket</p></div>
+</div>
+<p style="font-size:32px;line-height:1.4;color:#4A5568">A supervisor session watches the event file, verifies from facts, and asks the owner before anything outside the repo: deploys, merges it is not cleared for, clearing a halt.</p>
+</section></div></div>
+<p class="notes">The build used forger, a work loop. Planning is interactive: the owner answers decisions in rounds, each with a recommendation. After that, an engine picks the next ticket and launches a fresh headless agent session to implement it end to end. The session must pass the gates, push, and open a PR. A verifier then checks each acceptance criterion against evidence before the merge. The supervisor never writes code. It starts the engine, watches for terminal events and reports back, and it escalates anything that needs the owner.</p>
+<div class="frame"><div class="stage"><section class="slide" id="decisions" data-transition="fade" style="background:#F5F3EE;color:#14213D;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#8A5A12;letter-spacing:2px">PLANNING</p>
+<h2 style="font-size:72px;font-weight:700;line-height:1.1">Decisions made before any code was written</h2>
+<table style="font-size:30px;color:#14213D">
+<tr><th style="width:34%">Decision</th><th style="width:66%">Choice</th></tr>
+<tr><td>Fidelity</td><td>Same mechanics, numbers, copy and pixel art</td></tr>
+<tr><td>Timing</td><td>Fixed 1/60 s steps from real elapsed time; capped, frozen when hidden</td></tr>
+<tr><td>Game logic</td><td>Pure, seeded functions with no DOM or audio</td></tr>
+<tr><td>Design</td><td>The original file is the approved design</td></tr>
+<tr><td>Accessibility</td><td>Zoom allowed, focus-trapped dialog, live dialogue, axe clean</td></tr>
+<tr><td>Stack</td><td>Vite, React 19, strict TypeScript, Vitest, Playwright, bun</td></tr>
+</table>
+</section></div></div>
+<p class="notes">Planning ran as two numbered rounds of questions, each with a recommended answer; the owner accepted all of them. The two architectural ones were recorded as ADRs in docs/adr: the pure simulation on a fixed timestep, and the original as the approved design. A glossary pinned down vocabulary such as shift, unmanned, walkout and hub dispatch, so tickets and tests use the same words.</p>
+<div class="frame"><div class="stage"><section class="slide" id="architecture" data-transition="fade" style="background:#14213D;color:#F5F3EE;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#F2A541;letter-spacing:2px">ARCHITECTURE</p>
+<h2 style="font-size:72px;font-weight:700;line-height:1.1">Pure simulation in the middle, thin shells around it</h2>
+<div style="display:flex;align-items:center;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;border:2px solid #3A4A6B;padding:32px;border-radius:16px"><h3 style="font-size:36px;font-weight:600">Real-time loop</h3><p style="font-size:26px;color:#BFC8D6">Accumulates elapsed time, runs whole steps</p></div>
+<x-icon name="PaperPlane" style="color:#F2A541;width:48px;height:48px"></x-icon>
+<div style="flex:1.3;display:flex;flex-direction:column;gap:12px;background:#F2A541;color:#14213D;padding:40px;border-radius:16px"><h3 style="font-size:40px;font-weight:700">src/game</h3><p style="font-size:26px">step(state, rng) returns the next state and events. Seeded, no DOM, no Math.random</p></div>
+<x-icon name="PaperPlane" style="color:#F2A541;width:48px;height:48px"></x-icon>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<div style="border:2px solid #3A4A6B;padding:24px;border-radius:16px"><h3 style="font-size:32px;font-weight:600">Canvas renderer</h3></div>
+<div style="border:2px solid #3A4A6B;padding:24px;border-radius:16px"><h3 style="font-size:32px;font-weight:600">Audio engine</h3></div>
+<div style="border:2px solid #3A4A6B;padding:24px;border-radius:16px"><h3 style="font-size:32px;font-weight:600">React HUD</h3></div>
+</div>
+</div>
+<p style="font-size:32px;line-height:1.4;color:#BFC8D6">A whole two-round shift can be replayed in a unit test, step for step.</p>
+</section></div></div>
+<p class="notes">All game rules live in src/game as pure functions: state in, state out, plus a list of events such as chime, walkout or hum start. Randomness comes from an injected seeded generator, so tests replay exactly. The browser loop accumulates real time and runs as many fixed 1/60 second steps as fit, capped at 250 ms per frame and frozen while the tab is hidden. The canvas, audio and React only read state or consume events. A purity test fails the build if src/game ever imports React, the DOM or audio.</p>
+<div class="frame"><div class="stage"><section class="slide" id="tickets" data-transition="fade" style="background:#F5F3EE;color:#14213D;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#8A5A12;letter-spacing:2px">THE BUILD ORDER</p>
+<h2 style="font-size:72px;font-weight:700;line-height:1.1">Seven vertical slices, each one PR</h2>
+<table style="font-size:28px;color:#14213D">
+<tr><th style="width:24%">Ticket</th><th style="width:56%">What it delivered</th><th style="width:20%">PR</th></tr>
+<tr><td>scaffold</td><td>Toolchain, gates, colour tokens, local font</td><td>#1</td></tr>
+<tr><td>sim-core</td><td>Pure seeded game logic and button labels</td><td>#2</td></tr>
+<tr><td>canvas-render</td><td>Pixel art and the real-time loop</td><td>#10</td></tr>
+<tr><td>hud-controls</td><td>Frame, buttons, scores, keyboard</td><td>#11</td></tr>
+<tr><td>round-modal</td><td>Briefing and reports as a dialog</td><td>#12</td></tr>
+<tr><td>sound</td><td>WebAudio effects, remembered mute</td><td>#13</td></tr>
+<tr><td>e2e-a11y</td><td>Keyboard play-through and axe checks</td><td>#14</td></tr>
+</table>
+</section></div></div>
+<p class="notes">Each ticket was sized for one fresh agent session and carried testable acceptance criteria, file hints and the pattern to reuse. Dependencies made the order mechanical. Once the loop was unblocked, canvas-render through sound merged back to back; each worker session took between about three and six minutes.</p>
+<div class="frame"><div class="stage"><section class="slide" id="snag1" data-transition="fade" style="background:#F5F3EE;color:#14213D;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#8A5A12;letter-spacing:2px">SNAG 1 OF 3 - AFTER TICKET 1</p>
+<h2 style="font-size:72px;font-weight:700;line-height:1.1">The work was done, but the loop could not see the repo</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:2px solid #D9D4C7;border-radius:16px">
+<h3 style="font-size:40px;font-weight:600">Symptom</h3>
+<p style="font-size:32px;line-height:1.45;color:#4A5568">Scaffold was pushed and its PR opened, then the loop halted: completed, nothing merged. Git pushed over SSH, but the GitHub CLI was signed in as a second account that could not see the private repo.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:2px solid #D9D4C7;border-radius:16px">
+<h3 style="font-size:40px;font-weight:600">Fix</h3>
+<p style="font-size:32px;line-height:1.45;color:#4A5568">Merge the finished PR by hand, then restart the engine with the repo owner's token in its own environment only. The global login was left alone.</p>
+</div>
+</div>
+</section></div></div>
+<p class="notes">The loop halted on purpose: a ticket marked completed with nothing merged is not done, so it stopped instead of re-running the work. The cause was identity. Two GitHub accounts were signed in and the active one could not resolve the repository. The lesson is to give the loop a scoped identity of its own rather than rely on whichever account is active.</p>
+<div class="frame"><div class="stage"><section class="slide" id="snag2" data-transition="fade" style="background:#F5F3EE;color:#14213D;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#8A5A12;letter-spacing:2px">SNAG 2 OF 3 - AFTER TICKET 2</p>
+<h2 style="font-size:72px;font-weight:700;line-height:1.1">The verifier only understood issue-numbered branches</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:2px solid #D9D4C7;border-radius:16px">
+<h3 style="font-size:40px;font-weight:600">Symptom</h3>
+<p style="font-size:32px;line-height:1.45;color:#4A5568">With a local backlog, branches were named feat/sim-core. Verify expects feat/issue-n, so it could not name the ticket, and merge refused without a verdict. Every ticket would halt the same way.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:2px solid #D9D4C7;border-radius:16px">
+<h3 style="font-size:40px;font-weight:600">Fix</h3>
+<p style="font-size:32px;line-height:1.45;color:#4A5568">Switch the tracker to GitHub Issues by PR: remaining tickets filed as issues #3 to #7 with labels and native blocked-by links. Branches became feat/issue-n.</p>
+</div>
+</div>
+</section></div></div>
+<p class="notes">This one was a defect in the loop tooling, not in the app. The worker diagnosed it itself, pointed at the line in the verifier, and stopped rather than merge unverified. The fastest route was to move the backlog onto GitHub Issues, which the verifier fully supports. Right after the switch, four tickets merged in a row with no human involvement. The verifier bug is still worth fixing upstream for other local-backlog repos.</p>
+<div class="frame"><div class="stage"><section class="slide" id="snag3" data-transition="fade" style="background:#F5F3EE;color:#14213D;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#8A5A12;letter-spacing:2px">SNAG 3 OF 3 - THE LAST TICKET</p>
+<h2 style="font-size:72px;font-weight:700;line-height:1.1">"It passes on my machine" is not evidence</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:2px solid #D9D4C7;border-radius:16px">
+<h3 style="font-size:40px;font-weight:600">Symptom</h3>
+<p style="font-size:32px;line-height:1.45;color:#4A5568">The e2e and accessibility ticket passed locally, but the verifier could not use browser tests as evidence. After three rounds it handed the PR to the owner, who spotted the real gap: no CI.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:2px solid #D9D4C7;border-radius:16px">
+<h3 style="font-size:40px;font-weight:600">Fix</h3>
+<p style="font-size:32px;line-height:1.45;color:#4A5568">PR #15 added GitHub Actions: gates plus Playwright and axe on every PR. PR #14 was rebased onto it, went green in CI, and both were merged.</p>
+</div>
+</div>
+</section></div></div>
+<p class="notes">Until this point every "all green" claim came from a worker's own machine. The owner, reading PR 14, asked the right question: where does this run where anyone can see it. The CI workflow runs bun run gates and the full Playwright suite, including axe, on every pull request and on pushes to main. Along the way axe found real contrast failures in the round modal's coloured text, and the worker fixed them with darker tokens.</p>
+<div class="frame"><div class="stage"><section class="slide" id="numbers" data-transition="fade" style="background:#14213D;color:#F5F3EE;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:64px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#F2A541;letter-spacing:2px">THE RESULT IN NUMBERS</p>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:56px 48px">
+<div style="display:flex;flex-direction:column;gap:8px"><p style="font-size:120px;font-weight:700;color:#F2A541;line-height:1">7</p><p style="font-size:32px;color:#BFC8D6">tickets planned, all merged</p></div>
+<div style="display:flex;flex-direction:column;gap:8px"><p style="font-size:120px;font-weight:700;color:#F2A541;line-height:1">107</p><p style="font-size:32px;color:#BFC8D6">unit tests in 14 files, green in CI</p></div>
+<div style="display:flex;flex-direction:column;gap:8px"><p style="font-size:120px;font-weight:700;color:#F2A541;line-height:1">3</p><p style="font-size:32px;color:#BFC8D6">Playwright tests: both rounds by keyboard, with axe</p></div>
+<div style="display:flex;flex-direction:column;gap:8px"><p style="font-size:120px;font-weight:700;color:#F2A541;line-height:1">~19 min</p><p style="font-size:32px;color:#BFC8D6">for four tickets back to back, once unblocked</p></div>
+<div style="display:flex;flex-direction:column;gap:8px"><p style="font-size:120px;font-weight:700;color:#F2A541;line-height:1">~$3</p><p style="font-size:32px;color:#BFC8D6">average agent cost per merged PR</p></div>
+<div style="display:flex;flex-direction:column;gap:8px"><p style="font-size:120px;font-weight:700;color:#F2A541;line-height:1">3</p><p style="font-size:32px;color:#BFC8D6">halts, each stopped before unverified work went in</p></div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#BFC8D6">Sources: GitHub Actions run on PR #14, forger loop log and report</p>
+</section></div></div>
+<p class="notes">Test counts come from the CI run on PR 14. The 19 minutes is the span from the start of canvas-render to the merge of sound, taken from the loop log. The cost figure is the loop's own report, averaged across merged PRs; the first, larger tickets cost more than the later ones. Each of the three halts was the loop refusing to march past work it could not verify, which is the behaviour you want.</p>
+<div class="frame"><div class="stage"><section class="slide" id="shipped" data-transition="fade" style="background:#F5F3EE;color:#14213D;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#8A5A12;letter-spacing:2px">WHAT SHIPPED</p>
+<h2 style="font-size:72px;font-weight:700;line-height:1.1">Live on Vercel, guarded by CI</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:2px solid #D9D4C7;border-radius:16px"><x-icon name="Globe" style="color:#8A5A12;width:56px;height:56px"></x-icon><h3 style="font-size:40px;font-weight:600">Production</h3><p style="font-size:30px;line-height:1.45;color:#4A5568">The React build from main, at showroom-shift-simulator.vercel.app</p></div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:2px solid #D9D4C7;border-radius:16px"><x-icon name="CheckCircle" style="color:#8A5A12;width:56px;height:56px"></x-icon><h3 style="font-size:40px;font-weight:600">CI</h3><p style="font-size:30px;line-height:1.45;color:#4A5568">Gates and e2e with axe on every PR and every push to main</p></div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:2px solid #D9D4C7;border-radius:16px"><x-icon name="Clock" style="color:#8A5A12;width:56px;height:56px"></x-icon><h3 style="font-size:40px;font-weight:600">Rollback</h3><p style="font-size:30px;line-height:1.45;color:#4A5568">The original page stays in deployment history and in original/</p></div>
+</div>
+</section></div></div>
+<p class="notes">The playable original went to production first, as a stop-gap while the port finished. Once PR 14 merged and CI was green on main, a fresh build from main replaced it. The original remains in Vercel's deployment history for an instant rollback, and in the repo as the reference design.</p>
+<div class="frame"><div class="stage"><section class="slide" id="lessons" data-transition="fade" style="background:#F5F3EE;color:#14213D;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#8A5A12;letter-spacing:2px">LESSONS</p>
+<h2 style="font-size:72px;font-weight:700;line-height:1.1">What we would do the same, and differently</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#FFFDF8;padding:36px;border:2px solid #D9D4C7;border-radius:16px"><h3 style="font-size:36px;font-weight:600">Keep: decide before building</h3><p style="font-size:28px;line-height:1.45;color:#4A5568">Two rounds of planning questions gave workers tickets they could finish cold.</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FFFDF8;padding:36px;border:2px solid #D9D4C7;border-radius:16px"><h3 style="font-size:36px;font-weight:600">Keep: pure core, thin shells</h3><p style="font-size:28px;line-height:1.45;color:#4A5568">Seeded logic made every rule testable without a browser.</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FFFDF8;padding:36px;border:2px solid #D9D4C7;border-radius:16px"><h3 style="font-size:36px;font-weight:600">Change: CI on day one</h3><p style="font-size:28px;line-height:1.45;color:#4A5568">Shared, visible checks should come with the scaffold, not the last ticket.</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FFFDF8;padding:36px;border:2px solid #D9D4C7;border-radius:16px"><h3 style="font-size:36px;font-weight:600">Change: check the plumbing first</h3><p style="font-size:28px;line-height:1.45;color:#4A5568">Remote, identity and tracker should be proven with one dry run.</p></div>
+</div>
+</section></div></div>
+<p class="notes">Two things clearly worked: planning decisions up front, and isolating the game rules as pure, seeded code. Two things cost us halts: CI arrived last instead of first, and the loop's plumbing, meaning the git remote, the GitHub identity and the tracker type, was not proven before the first real ticket. A single dry-run ticket would have surfaced both snag 1 and snag 2 in minutes.</p>
+<div class="frame"><div class="stage"><section class="slide" id="next" data-transition="fade" style="background:#F2A541;color:#14213D;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:48px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#14213D;letter-spacing:2px">NEXT STEPS</p>
+<h2 style="font-size:88px;font-weight:700;line-height:1.1">Make the guard rails mandatory</h2>
+<ol style="font-size:40px;line-height:1.6"><li>Require the CI checks on main in branch protection</li><li>Fix the verifier upstream: local branch names, browser-test evidence</li><li>Play-test production on a real phone</li></ol>
+</section></div></div>
+<p class="notes">Today GitHub would still allow a merge with failing checks, because nothing is required on main. Requiring the two CI jobs, and optionally the loop's own verify check, closes that gap. The two verifier fixes belong in the forger tool so the next repo does not hit the same halts. And automated checks are not a substitute for someone actually playing a round on a phone.</p>
+<script>const fit=()=>document.querySelectorAll(".frame").forEach(f=>f.firstElementChild.style.transform="scale("+f.clientWidth/1920+")");addEventListener("resize",fit);fit();</script>
+</body></html>

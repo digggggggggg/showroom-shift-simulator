@@ -20,4 +20,4 @@ The ui pack asks for a grey-box wireframe, approved by the owner, before any scr
 ## Consequences
 
 - Visual changes to the game are out of scope unless they fix accessibility.
-- `original/` stays in the repo as reference; it is not served or built.
+- `original/` stays in the repo as reference, never edited; the build copies it unchanged so it stays playable at `/showroom-shift-simulator.html` and `/original`.
