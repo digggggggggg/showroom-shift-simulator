@@ -260,15 +260,15 @@
 }
 
 .modal-box .good {
-  color: var(--color-good);
+  color: var(--color-modal-good);
 }
 
 .modal-box .bad {
-  color: var(--color-bad);
+  color: var(--color-modal-bad);
 }
 
 .modal-box .warn {
-  color: var(--color-warn);
+  color: var(--color-modal-warn);
 }
 
 .modal-btn {

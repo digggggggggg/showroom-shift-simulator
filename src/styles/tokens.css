@@ -51,6 +51,9 @@
   --color-modal-border: #17271e;
   --color-modal-heading: #0b6742;
   --color-modal-panel: #f1faee;
+  --color-modal-good: #0b6742;
+  --color-modal-bad: #a8133a;
+  --color-modal-warn: #7a5200;
   --color-modal-btn-text: #032b21;
   --color-modal-shadow: rgba(0, 0, 0, 0.8);
 }
